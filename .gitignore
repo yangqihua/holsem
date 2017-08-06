@@ -9,3 +9,4 @@ runtime
 public/assets/libs/
 /application/admin/command/Install/*.lock
 /public/uploads
+/public/install.php
