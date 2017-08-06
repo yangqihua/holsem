@@ -27,14 +27,14 @@ class Index extends Backend
     public function index()
     {
         //
-        $menulist = $this->auth->getSidebar([
+        $menuList = $this->auth->getSidebar([
             'dashboard'  => 'hot',
             'auth'       => ['new', 'red', 'badge'],
             'auth/admin' => 12,
             'auth/rule'  => 4,
             'general'    => ['18', 'purple'],
                 ], $this->view->site['fixedpage']);
-        $this->view->assign('menulist', $menulist);
+        $this->view->assign('menulist', $menuList);
         $this->view->assign('title', __('Home'));
         return $this->view->fetch();
     }
