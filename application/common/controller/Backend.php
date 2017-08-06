@@ -84,7 +84,7 @@ class Backend extends Controller
     protected $multiFields = 'status';
 
     /**
-     * 引入后台控制器的traits
+     * 引入后台控制器的traits , 拥有增删改查，批量修改某些字段的功能
      */
     use \app\admin\library\traits\Backend;
 

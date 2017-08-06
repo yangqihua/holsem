@@ -146,6 +146,7 @@ trait Backend
 
     /**
      * 批量更新
+     * @param string $ids
      */
     public function multi($ids = "")
     {

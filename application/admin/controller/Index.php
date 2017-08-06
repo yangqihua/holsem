@@ -34,7 +34,7 @@ class Index extends Backend
             'auth/rule'  => 4,
             'general'    => ['18', 'purple'],
                 ], $this->view->site['fixedpage']);
-        $this->view->assign('menulist', $menuList);
+        $this->view->assign('menuList', $menuList);
         $this->view->assign('title', __('Home'));
         return $this->view->fetch();
     }

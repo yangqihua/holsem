@@ -126,6 +126,7 @@ class Auth extends \fast\Auth
      * 检测当前控制器和方法是否匹配传递的数组
      *
      * @param array $arr 需要验证权限的数组
+     * @return bool
      */
     public function match($arr = [])
     {
@@ -233,6 +234,7 @@ class Auth extends \fast\Auth
      * 获取左侧菜单栏
      *
      * @param array $params URL对应的badge数据
+     * @param string $fixedPage
      * @return string
      */
     public function getSidebar($params = [], $fixedPage = 'dashboard')
