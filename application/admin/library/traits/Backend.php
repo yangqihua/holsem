@@ -83,6 +83,8 @@ trait Backend
 
     /**
      * 编辑
+     * @param null $ids
+     * @return
      */
     public function edit($ids = NULL)
     {
@@ -130,6 +132,7 @@ trait Backend
 
     /**
      * 删除
+     * @param string $ids
      */
     public function del($ids = "")
     {
