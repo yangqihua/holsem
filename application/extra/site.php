@@ -32,7 +32,7 @@ return array (
   'mail_smtp_host' => 'smtp.exmail.qq.com',
   'mail_smtp_port' => '25',
   'mail_smtp_user' => 'yangqihua@dowish.net',
-  'mail_smtp_pass' => 'rybSvkStizNh7DkF',
+  'mail_smtp_pass' => 'zDaJgXYSH9edhYtf',
   'mail_verify_type' => '0',
   'mail_from' => 'yangqihua@dowish.net',
   '嘻嘻嘻' => 'value',

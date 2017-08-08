@@ -16,7 +16,7 @@ class Config extends Backend
 {
 
     protected $model = null;
-    protected $noNeedRight = ['check'];
+    protected $noNeedRight = ['check','emailtest'];
 
     public function _initialize()
     {
@@ -37,6 +37,7 @@ class Config extends Backend
 
         foreach ($this->model->all() as $k => $v)
         {
+            // 数据库中有该组而配置文件site.php中没有，则忽略
             if (!isset($siteList[$v['group']]))
             {
                 continue;
@@ -60,7 +61,9 @@ class Config extends Backend
             $index++;
         }
         $this->view->assign('siteList', $siteList);
+        // 数据类型String、Array之类的
         $this->view->assign('typeList', ConfigModel::getTypeList());
+        // site.php 中的configgroup
         $this->view->assign('groupList', ConfigModel::getGroupList());
         return $this->view->fetch();
     }
