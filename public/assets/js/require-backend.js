@@ -1,10 +1,11 @@
 require.config({
     urlArgs: "v=" + requirejs.s.contexts._.config.config.site.version,
+    // 定义moment包，bootstrap-datetimepicker的依赖使用了该包
     packages: [{
-            name: 'moment',
-            location: '../libs/moment',
-            main: 'moment'
-        }],
+        name: 'moment',
+        location: '../libs/moment',
+        main: 'moment'
+    }],
     //在打包压缩时将会把include中的模块合并到主文件中
     include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage'],
     paths: {
@@ -20,7 +21,7 @@ require.config({
         'adminlte': 'adminlte',
         'bootstrap-table-commonsearch': 'bootstrap-table-commonsearch',
         'bootstrap-table-template': 'bootstrap-table-template',
-        //
+
         // 以下的包从bower的libs目录加载
         'jquery': '../libs/jquery/dist/jquery.min',
         'bootstrap': '../libs/bootstrap/dist/js/bootstrap.min',
@@ -99,11 +100,11 @@ require.config({
             'moment/locale/zh-cn',
 //            'css!../libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         ],
-        'bootstrap-select': ['css!../libs/bootstrap-select/dist/css/bootstrap-select.min.css', ],
+        'bootstrap-select': ['css!../libs/bootstrap-select/dist/css/bootstrap-select.min.css',],
         'bootstrap-select-lang': ['bootstrap-select'],
         'summernote': ['../libs/summernote/dist/summernote.min', 'css!../libs/summernote/dist/summernote.css'],
 //        'toastr': ['css!../libs/toastr/toastr.min.css'],
-        'jstree': ['css!../libs/jstree/dist/themes/default/style.css', ],
+        'jstree': ['css!../libs/jstree/dist/themes/default/style.css',],
         'plupload': {
             deps: ['../libs/plupload/js/moxie.min'],
             exports: "plupload"
@@ -113,7 +114,9 @@ require.config({
         'validator-lang': ['validator-core'],
 //        'selectpage': ['css!../libs/selectpage/selectpage.css'],
     },
-    baseUrl: requirejs.s.contexts._.config.config.site.cdnurl + '/assets/js/', //资源基础路径
+    // 资源基础路径
+    baseUrl: requirejs.s.contexts._.config.config.site.cdnurl + '/assets/js/',
+    // 所以模块的依赖于这个css
     map: {
         '*': {
             'css': '../libs/require-css/css.min'

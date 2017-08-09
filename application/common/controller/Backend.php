@@ -130,8 +130,9 @@ class Backend extends Controller
             }
         }
 
+        $isRefEqualAddtabs = input("ref") == 'addtabs';
         // 非选项卡时重定向
-        if (!$this->request->isPost() && !IS_AJAX && !IS_ADDTABS && !IS_DIALOG && input("ref") == 'addtabs')
+        if (!$this->request->isPost() && !IS_AJAX && !IS_ADDTABS && !IS_DIALOG && $isRefEqualAddtabs)
         {
             $url = preg_replace_callback("/([\?|&]+)ref=addtabs(&?)/i", function($matches) {
                 return $matches[2] == '&' ? $matches[1] : '';
