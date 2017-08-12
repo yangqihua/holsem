@@ -9,4 +9,5 @@ public/assets/libs/
 /public/install.php
 /application/admin/command/Install/
 .config.inc.php
+/extend/amazon/order/Samples
 /application/api/config.php
