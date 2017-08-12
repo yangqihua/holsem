@@ -8,4 +8,5 @@ public/assets/libs/
 /public/uploads
 /public/install.php
 /application/admin/command/Install/
-/extend/amazon/MarketplaceWebServiceOrders/Samples/.config.inc.php
+.config.inc.php
+/application/api/config.php

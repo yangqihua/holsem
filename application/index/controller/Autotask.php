@@ -101,6 +101,8 @@ class Autotask extends Controller
                     {
                         // 本地项目URL
                         exec('nohup php ' . ROOT_PATH . 'public/index.php ' . $crontab['content'] . ' >> ' . $logDir . date("Y-m-d") . '.log 2>&1 &');
+                        // 执行下面这个命令，仅仅是为了日志能够换行
+                        exec('nohup echo "" >> '. $logDir . date("Y-m-d") . '.log 2>&1 &');
                     }
                     else
                     {
