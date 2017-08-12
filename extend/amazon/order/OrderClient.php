@@ -671,8 +671,10 @@ class OrderClient implements OrderInterface
         }
 
         $response = "";
-//        $response = curl_exec($ch);
-        $response = 'HTTP/1.1 200 OK
+        $response = curl_exec($ch);
+        /*
+         *
+         $response = 'HTTP/1.1 200 OK
 Server: Server
 Date: Sat, 12 Aug 2017 10:38:27 GMT
 Content-Type: text/xml
@@ -891,8 +893,8 @@ Vary: Accept-Encoding,User-Agent
   <ResponseMetadata>
     <RequestId>0a3b9953-8336-497b-bee9-bc60ef7a74ac</RequestId>
   </ResponseMetadata>
-</ListOrdersResponse>
-';
+</ListOrdersResponse>';
+        */
 
         if ($response === false) {
             require_once(dirname(__FILE__) . '/OrderException.php');
