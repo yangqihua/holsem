@@ -416,7 +416,6 @@ abstract class OrderModel
      */
     private function _isComplexType($fieldType)
     {
-        //TODO : 将其他的复杂的类型设置进来
 //        $complexType = ['ListOrdersResult', 'ResponseMetadata', 'ResponseHeaderMetadata','Order','PaymentExecutionDetailItem','Address,','Money'];
 //        foreach ($complexType as $type) {
 //            if ($type == $fieldType) {

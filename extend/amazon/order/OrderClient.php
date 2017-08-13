@@ -671,9 +671,10 @@ class OrderClient implements OrderInterface
         }
 
         $response = "";
-        $response = curl_exec($ch);
-        /*
-         *
+//        $response = curl_exec($ch);
+        // TODO : 设置模拟数据
+
+
          $response = 'HTTP/1.1 200 OK
 Server: Server
 Date: Sat, 12 Aug 2017 10:38:27 GMT
@@ -695,7 +696,7 @@ Vary: Accept-Encoding,User-Agent
         <LatestShipDate>2017-06-26T15:14:10Z</LatestShipDate>
         <OrderType>StandardOrder</OrderType>
         <PurchaseDate>2017-06-25T16:19:35Z</PurchaseDate>
-        <AmazonOrderId>113-2285529-6164230</AmazonOrderId>
+        <AmazonOrderId>119-2285529-6164230</AmazonOrderId>
         <BuyerEmail>jfy2jw1bj0x0zm2@marketplace.amazon.com</BuyerEmail>
         <IsReplacementOrder>false</IsReplacementOrder>
         <LastUpdateDate>2017-06-26T15:25:46Z</LastUpdateDate>
@@ -894,7 +895,7 @@ Vary: Accept-Encoding,User-Agent
     <RequestId>0a3b9953-8336-497b-bee9-bc60ef7a74ac</RequestId>
   </ResponseMetadata>
 </ListOrdersResponse>';
-        */
+
 
         if ($response === false) {
             require_once(dirname(__FILE__) . '/OrderException.php');

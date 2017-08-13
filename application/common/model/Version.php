@@ -56,6 +56,7 @@ class Version extends Model
      *
      * @param string $version
      * @param array $data
+     * @return bool
      */
     public static function inversion($version, $data = [])
     {

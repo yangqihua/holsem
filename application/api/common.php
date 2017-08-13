@@ -32,46 +32,40 @@ if (!function_exists('getOrderList'))
         $request->setMarketplaceId(config('amazon.marketplace_id'));
         $request->setMaxResultsPerPage(10);
 
-        $request->setCreatedAfter('2017-06-26T00:15:47+08:00');
-        $request->setCreatedBefore('2017-06-27T10:15:47+08:00');
+        $createAfter = date('c',time()-10*60-1*60*60);
+        $createBefore = date('c',time()-10*60);
+
+        $request->setCreatedAfter($createAfter);
+        $request->setCreatedBefore($createBefore);
         try {
             $response = $service->ListOrders($request);
             $ordersResult = $response->getListOrdersResult();
-//            $arr = object_array($ordersResult);
-//            return $arr;
             $orders = $ordersResult->getOrders();
             $orderList = [];
             foreach ($orders as $order) {
                 $orderResult = [];
-                $orderResult["latestShipDate"] = $order->getLatestShipDate();
-                $orderResult["orderType"] = $order->getOrderType();
-                $orderResult["purchaseDate"] = $order->getPurchaseDate();
-                $orderResult["amazonOrderId"] = $order->getAmazonOrderId();
-                $orderResult["buyerEmail"] = $order->getBuyerEmail();
-                $orderResult["isReplacementOrder"] = $order->getIsReplacementOrder();
-                $orderResult["lastUpdateDate"] = $order->getLastUpdateDate();
-                $orderResult["numberOfItemsShipped"] = $order->getNumberOfItemsShipped();
-                $orderResult["shipServiceLevel"] = $order->getShipServiceLevel();
-                $orderResult["orderStatus"] = $order->getOrderStatus();
-                $orderResult["salesChannel"] = $order->getSalesChannel();
-                $orderResult["isBusinessOrder"] = $order->getIsBusinessOrder();
-                $orderResult["numberOfItemsUnshipped"] = $order->getNumberOfItemsUnshipped();
-                $orderResult["buyerName"] = $order->getBuyerName();
-                $orderResult["fulfillmentChannel"] = $order->getFulfillmentChannel();
+                $orderResult["latest_ship_date"] = datetime(strtotime($order->getLatestShipDate()));
+                $orderResult["order_type"] = $order->getOrderType();
+                $orderResult["purchase_date"] = datetime(strtotime($order->getPurchaseDate()));
+                $orderResult["amazon_order_id"] = $order->getAmazonOrderId();
+                $orderResult["buyer_email"] = $order->getBuyerEmail();
+                $orderResult["is_replacement_order"] = $order->getIsReplacementOrder();
+                $orderResult["last_update_date"] = datetime(strtotime($order->getLastUpdateDate()));
+                $orderResult["number_of_items_shipped"] = $order->getNumberOfItemsShipped();
+                $orderResult["ship_service_level"] = $order->getShipServiceLevel();
+                $orderResult["order_status"] = $order->getOrderStatus();
+                $orderResult["sales_channel"] = $order->getSalesChannel();
+                $orderResult["is_business_order"] = $order->getIsBusinessOrder();
+                $orderResult["number_of_items_unshipped"] = $order->getNumberOfItemsUnshipped();
+                $orderResult["buyer_name"] = $order->getBuyerName();
+                $orderResult["fulfillment_channel"] = $order->getFulfillmentChannel();
                 $orderList[] = $orderResult;
             }
             $nextToken = $ordersResult->getNextToken();
-            return ['nextToken'=>$nextToken,'orderList'=>$orderList];
+            return ['nextToken'=>$nextToken,'orderList'=>$orderList,'message'=>'ok','code'=>200];
         } catch (OrderException $ex) {
-            echo("Caught Exception: " . $ex->getMessage() . "\n");
-            echo("Response Status Code: " . $ex->getStatusCode() . "\n");
-            echo("Error Code: " . $ex->getErrorCode() . "\n");
-            echo("Error Type: " . $ex->getErrorType() . "\n");
-            echo("Request ID: " . $ex->getRequestId() . "\n");
-            echo("XML: " . $ex->getXML() . "\n");
-            echo("ResponseHeaderMetadata: " . $ex->getResponseHeaderMetadata() . "\n");
+            return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
         }
-        return [];
     }
 
     function object_array($array) {
