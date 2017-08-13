@@ -670,11 +670,11 @@ class OrderClient implements OrderInterface
             curl_setopt($ch, CURLOPT_PROXYUSERPWD, $config['ProxyUsername'] . ':' . $config['ProxyPassword']);
         }
 
-        $response = "";
-//        $response = curl_exec($ch);
+//        $response = "";
+        $response = curl_exec($ch);
         // TODO : 设置模拟数据
 
-
+/*
          $response = 'HTTP/1.1 200 OK
 Server: Server
 Date: Sat, 12 Aug 2017 10:38:27 GMT
@@ -697,7 +697,7 @@ Vary: Accept-Encoding,User-Agent
         <OrderType>StandardOrder</OrderType>
         <PurchaseDate>2017-06-25T16:19:35Z</PurchaseDate>
         <AmazonOrderId>119-2285529-6164230</AmazonOrderId>
-        <BuyerEmail>jfy2jw1bj0x0zm2@marketplace.amazon.com</BuyerEmail>
+        <BuyerEmail>2jfy2jw1bj0x0zm2@marketplace.amazon.com</BuyerEmail>
         <IsReplacementOrder>false</IsReplacementOrder>
         <LastUpdateDate>2017-06-26T15:25:46Z</LastUpdateDate>
         <NumberOfItemsShipped>2</NumberOfItemsShipped>
@@ -736,7 +736,7 @@ Vary: Accept-Encoding,User-Agent
         <OrderType>StandardOrder</OrderType>
         <PurchaseDate>2017-06-25T16:20:41Z</PurchaseDate>
         <AmazonOrderId>112-0757259-2304252</AmazonOrderId>
-        <BuyerEmail>cdgsgrpx9w9vfh4@marketplace.amazon.com</BuyerEmail>
+        <BuyerEmail>2cdgsgrpx9w9vfh4@marketplace.amazon.com</BuyerEmail>
         <IsReplacementOrder>false</IsReplacementOrder>
         <LastUpdateDate>2017-06-25T19:42:26Z</LastUpdateDate>
         <NumberOfItemsShipped>1</NumberOfItemsShipped>
@@ -895,7 +895,7 @@ Vary: Accept-Encoding,User-Agent
     <RequestId>0a3b9953-8336-497b-bee9-bc60ef7a74ac</RequestId>
   </ResponseMetadata>
 </ListOrdersResponse>';
-
+*/
 
         if ($response === false) {
             require_once(dirname(__FILE__) . '/OrderException.php');
