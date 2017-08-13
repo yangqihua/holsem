@@ -32,20 +32,8 @@ class Order extends Api
     {
         $orderListResult = getOrderList();
         if ($orderListResult['code'] == 200) {
-
-            $maxGroupIds = $this->model->column('group_id');
-            $maxGroupId = 0;
-            if (!is_null($maxGroupIds) && count($maxGroupIds) > 0) {
-                $maxGroupId = $maxGroupIds[count($maxGroupIds) - 1];
-            }
-            $lastOrders = $this->model
-//                ->where('group_id',$maxGroupId)
-                ->column('amazon_order_id');
+            $lastOrders = $this->model->column('amazon_order_id');
             foreach ($orderListResult['orderList'] as $key => $order) {
-//                if ($order['order_status'] == 'Pending' || $order['order_status'] == 'Canceled') {
-//                    continue;
-//                }
-                $order['group_id'] = $maxGroupId + 1;
                 $isExist = false;
                 foreach ($lastOrders as $k => $v) {
                     if ($v == $order['amazon_order_id']) {
@@ -56,11 +44,10 @@ class Order extends Api
                 if (!$isExist) {
                     $this->model->data($order, true)->isUpdate(false)->save();
                 } else {
-                    $order['group_id'] = $maxGroupId;
                     $this->model->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                 }
             }
-        } else {
+        }else {
             // TODO: 请求失败的处理
         }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => $orderListResult]);

@@ -30,9 +30,9 @@ if (!function_exists('getOrderList'))
         $request = new ListOrderRequest();
         $request->setSellerId(config('amazon.merchant_id'));
         $request->setMarketplaceId(config('amazon.marketplace_id'));
-//        $request->setMaxResultsPerPage(10);
+        $request->setMaxResultsPerPage(100);
 
-        $createAfter = date('c',time()-10*60-5*60*60);
+        $createAfter = date('c',time()-10*60-4*60*60);
         $createBefore = date('c',time()-10*60);
 
         $request->setCreatedAfter($createAfter);
