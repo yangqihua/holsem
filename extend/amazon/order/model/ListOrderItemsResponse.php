@@ -24,6 +24,9 @@
 namespace amazon\order\model;
 
 use amazon\order\OrderModel;
+use DOMDocument;
+use DOMXPath;
+use Exception;
 
 /**
  * ListOrderItemsResponse
@@ -198,14 +201,14 @@ use amazon\order\OrderModel;
       */
     public static function fromXML($xml)
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML($xml);
-        $xpath = new \DOMXPath($dom);
+        $xpath = new DOMXPath($dom);
         $response = $xpath->query("//*[local-name()='ListOrderItemsResponse']");
         if ($response->length == 1) {
             return new ListOrderItemsResponse(($response->item(0)));
         } else {
-            throw new \Exception ("Unable to construct ListOrderItemsResponse from provided XML. 
+            throw new Exception ("Unable to construct ListOrderItemsResponse from provided XML. 
                                   Make sure that ListOrderItemsResponse is a root element");
         }
     }

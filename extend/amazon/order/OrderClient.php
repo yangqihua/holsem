@@ -557,6 +557,9 @@ class OrderClient implements OrderInterface
 
     /**
      * Invoke request and return response
+     * @param array $parameters
+     * @return array
+     * @throws OrderException
      */
     private function _invoke(array $parameters)
     {

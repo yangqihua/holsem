@@ -1,13 +1,12 @@
 <?php
 
 use amazon\order\model\ListOrderRequest;
+use amazon\order\model\ListOrderItemsRequest;
 use amazon\order\OrderClient;
 use amazon\order\OrderException;
 
 
-
-if (!function_exists('getOrderList'))
-{
+if (!function_exists('getOrderList')) {
 
     function getOrderList()
     {
@@ -32,11 +31,11 @@ if (!function_exists('getOrderList'))
         $request->setMarketplaceId(config('amazon.marketplace_id'));
         $request->setMaxResultsPerPage(100);
 
-        $createAfter = date('c',time()-10*60-4*60*60);
-        $createBefore = date('c',time()-10*60);
+        $createAfter = date('c', time() - 10 * 60 - 3 * 60 * 60);
+        $createBefore = date('c', time() - 10 * 60);
 
-        $request->setCreatedAfter($createAfter);
-        $request->setCreatedBefore($createBefore);
+        $request->setLastUpdatedAfter($createAfter);
+        $request->setLastUpdatedBefore($createBefore);
         try {
             $response = $service->ListOrders($request);
             $ordersResult = $response->getListOrdersResult();
@@ -62,22 +61,76 @@ if (!function_exists('getOrderList'))
                 $orderList[] = $orderResult;
             }
             $nextToken = $ordersResult->getNextToken();
-            return ['nextToken'=>$nextToken,'orderList'=>$orderList,'message'=>'ok','code'=>200];
+            return ['nextToken' => $nextToken, 'orderList' => $orderList, 'message' => 'ok', 'code' => 200];
         } catch (OrderException $ex) {
             return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
         }
     }
 
-    function object_array($array) {
-        if(is_object($array)) {
+}
+
+if (!function_exists('getOrderItemList($orderId)')) {
+
+    function getOrderItemList($orderId)
+    {
+        $config = array(
+            'ServiceURL' => config('amazon.service_url'),
+            'ProxyHost' => null,
+            'ProxyPort' => -1,
+            'ProxyUsername' => null,
+            'ProxyPassword' => null,
+            'MaxErrorRetry' => 3,
+        );
+
+        $service = new OrderClient(
+            config('amazon.aws_access_key_id'),
+            config('amazon.aws_secret_access_key'),
+            config('amazon.application_name'),
+            config('amazon.application_version'),
+            $config);
+
+        $request = new ListOrderItemsRequest();
+        $request->setSellerId(config('amazon.merchant_id'));
+        $request->setAmazonOrderId($orderId);
+        try {
+            $response = $service->ListOrderItems($request);
+
+            $orderItemResultList = $response->getListOrderItemsResult()->getOrderItems();
+
+            $orderItemList = [];
+            foreach ($orderItemResultList as $orderItemResult) {
+                $orderItem = [];
+                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
+                $orderItem['title'] = $orderItemResult->getTitle();
+                $orderItem['asin'] = $orderItemResult->getASIN();
+                $orderItem['seller_sku'] = $orderItemResult->getSellerSKU();
+                $orderItem['order_item_id'] = $orderItemResult->getOrderItemId();
+                $orderItem['quantity_shipped'] = $orderItemResult->getQuantityShipped();
+                $orderItem['promotion_discount'] = json_encode(['CurrencyCode'=>$orderItemResult->getPromotionDiscount()->getCurrencyCode(),'Amount'=>$orderItemResult->getPromotionDiscount()->getAmount()]);
+                $orderItem['item_price'] = json_encode(['CurrencyCode'=>$orderItemResult->getItemPrice()->getCurrencyCode(),'Amount'=>$orderItemResult->getItemPrice()->getAmount()]);
+                $orderItem['item_tax'] = json_encode(['CurrencyCode'=>$orderItemResult->getItemTax()->getCurrencyCode(),'Amount'=>$orderItemResult->getItemTax()->getAmount()]);
+                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
+                $orderItemList[] = $orderItem;
+            }
+            return ['orderItemList' => $orderItemList, 'message' => 'ok', 'code' => 200];
+        } catch (OrderException $ex) {
+            return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
+        }
+    }
+
+}
+
+if (!function_exists('object_array')) {
+    function object_array($array)
+    {
+        if (is_object($array)) {
             $array = (array)$array;
-        } if(is_array($array)) {
-            foreach($array as $key=>$value) {
+        }
+        if (is_array($array)) {
+            foreach ($array as $key => $value) {
                 $array[$key] = object_array($value);
             }
         }
         return $array;
     }
-
-
 }

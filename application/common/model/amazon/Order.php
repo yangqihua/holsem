@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\model;
+namespace app\common\model\amazon;
 
 use think\Model;
 
@@ -10,6 +10,8 @@ class Order extends Model
     // 设置当前模型对应的完整数据表名称
     protected $table = 'order';
 
+    protected $autoWriteTimestamp = 'int';
+
     //自定义初始化
     protected function initialize()
     {
@@ -18,14 +20,4 @@ class Order extends Model
         //TODO:自定义的初始化
     }
     
-    /**
-     * 读取分类分组列表
-     * @return array
-     */
-    public static function getGroupList()
-    {
-        $groupList = config('site.configgroup');
-        return $groupList;
-    }
-
 }
