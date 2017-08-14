@@ -106,9 +106,18 @@ if (!function_exists('getOrderItemList($orderId)')) {
                 $orderItem['seller_sku'] = $orderItemResult->getSellerSKU();
                 $orderItem['order_item_id'] = $orderItemResult->getOrderItemId();
                 $orderItem['quantity_shipped'] = $orderItemResult->getQuantityShipped();
-                $orderItem['promotion_discount'] = json_encode(['CurrencyCode'=>$orderItemResult->getPromotionDiscount()->getCurrencyCode(),'Amount'=>$orderItemResult->getPromotionDiscount()->getAmount()]);
-                $orderItem['item_price'] = json_encode(['CurrencyCode'=>$orderItemResult->getItemPrice()->getCurrencyCode(),'Amount'=>$orderItemResult->getItemPrice()->getAmount()]);
-                $orderItem['item_tax'] = json_encode(['CurrencyCode'=>$orderItemResult->getItemTax()->getCurrencyCode(),'Amount'=>$orderItemResult->getItemTax()->getAmount()]);
+                $promotionDiscount = $orderItemResult->getPromotionDiscount();
+                if (null != $promotionDiscount) {
+                    $orderItem['promotion_discount'] = json_encode(['CurrencyCode' => $promotionDiscount->getCurrencyCode(), 'Amount' => $promotionDiscount->getAmount()]);
+                }
+                $itemPrice = $orderItemResult->getItemPrice();
+                if (null != $itemPrice) {
+                    $orderItem['item_price'] = json_encode(['CurrencyCode' => $itemPrice->getCurrencyCode(), 'Amount' => $itemPrice->getAmount()]);
+                }
+                $itemTax = $orderItemResult->getItemTax();
+                if (null != $itemTax) {
+                    $orderItem['item_tax'] = json_encode(['CurrencyCode' => $itemTax->getCurrencyCode(), 'Amount' => $itemTax->getAmount()]);
+                }
                 $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
                 $orderItemList[] = $orderItem;
             }
