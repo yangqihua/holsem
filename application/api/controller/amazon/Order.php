@@ -127,29 +127,27 @@ class Order extends Api
                             );
                             $success = $mime->Decode($parameters, $decoded);
                             if (!$success)
-                                echo '<h2>MIME message decoding error: ' . HtmlSpecialChars($mime->error) . "</h2>\n";
+                                $error .= 'MIME message decoding error: ' . HtmlSpecialChars($mime->error) . "\n";
                             else {
                                 if ($mime->Analyze($decoded[0], $results)) {
                                     $mail = [];
                                     $mail['subject'] = iconv($results['Encoding'], "UTF-8", $results['Subject']);
                                     $mail['data'] = iconv($results['Encoding'], "UTF-8", $results['Data']);
                                     $mailList[] = $mail;
-                                } else{
-                                    $error = 'MIME message analyse error: ' . $mime->error . "\n";
+                                } else {
+                                    $error .= 'MIME message analyse error: ' . $mime->error . "\n";
                                 }
                             }
                         }
                     }
-                    if ($error == "" && ($error = $pop3->Close()) == ""){
-//                        $error = "Disconnected from the POP3 server , " . $pop3->hostname . "\n";
-                    }
+                    $error .= $pop3->Close();
                 }
             }
         }
         if ($error != "") {
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 500, 'message' => 'error', 'content' => HtmlSpecialChars($error)  ]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 500, 'message' => 'error', 'content' => $error]);
         }
-        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 200, 'message' => 'success', 'content' => $mailList ]);
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 200, 'message' => 'success', 'content' => $mailList]);
 
     }
 
