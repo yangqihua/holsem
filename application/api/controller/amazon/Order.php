@@ -11,6 +11,9 @@ namespace app\api\controller\amazon;
 use app\common\controller\Api;
 use app\common\model\amazon\Order as OrderModel;
 use app\common\model\amazon\OrderItem as OrderItemModel;
+use amazon\mail\POP3;
+use amazon\mail\MimeParser;
+use amazon\mail\Rfc822Address;
 
 class Order extends Api
 {
@@ -68,18 +71,85 @@ class Order extends Api
         if ($order != null) {
             $orderItemListResult = getOrderItemList($order['amazon_order_id']);
             if ($orderItemListResult['code'] == 200) {
-                $this->orderItemModel->where('order_id',$order['id'])->delete();
-                foreach ($orderItemListResult['orderItemList'] as $key=>$value){
+                $this->orderItemModel->where('order_id', $order['id'])->delete();
+                foreach ($orderItemListResult['orderItemList'] as $key => $value) {
                     $orderItemListResult['orderItemList'][$key]['order_id'] = $order['id'];
                 }
                 $this->orderItemModel->saveAll($orderItemListResult['orderItemList']);
-                $this->orderModel->where('id',$order['id'])->update(['has_items'=>1]);
+                $this->orderModel->where('id', $order['id'])->update(['has_items' => 1]);
             } else {
                 // TODO: 请求失败的处理
             }
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrderItems', 'code' => $orderItemListResult['code'], 'message' => $orderItemListResult['message'], 'content' => $orderItemListResult]);
         }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrderItems', 'code' => 200, 'message' => '暂无需要抓取的商品', 'content' => '暂无需要抓取的商品']);
+
+    }
+
+    public function getMail()
+    {
+        $host = "pop.exmail.qq.com";
+        $user = "yangqihua@dowish.net";
+        $pass = "M5dE8kJipkkwSyat";
+
+        stream_wrapper_register('pop3', '\amazon\mail\POP3Stream');
+
+        $pop3 = new POP3();
+        $pop3->hostname = "pop.exmail.qq.com";             /* POP 3 server host name                      */
+        $pop3->port = 995;                         /* POP 3 server host port, usually 110 but some servers use other ports Gmail uses 995 */
+        $pop3->tls = 1;                            /* Establish secure connections using TLS      */
+        $user = "yangqihua@dowish.net";                        /* Authentication user name                    */
+        $password = "M5dE8kJipkkwSyat";                    /* Authentication password                     */
+        $pop3->realm = "";                         /* Authentication realm or domain              */
+        $pop3->workstation = "";                   /* Workstation for NTLM authentication         */
+        $apop = 0;                                 /* Use APOP authentication                     */
+        $pop3->authentication_mechanism = "USER";  /* SASL authentication mechanism               */
+        $pop3->debug = 0;                          /* Output debug information                    */
+        $pop3->html_debug = 0;                     /* Debug information is in HTML                */
+        $pop3->join_continuation_header_lines = 1; /* Concatenate headers split in multiple lines */
+
+        $mailList = [];
+        if (($error = $pop3->Open()) == "") {
+            if (($error = $pop3->Login($user, $password, $apop)) == "") {
+                if (($error = $pop3->Statistics($messages, $size)) == "") {
+                    $count = $messages - 3;
+                    for ($i = $messages; $i >= $count; $i--) // grabs last 3 mails
+                    {
+                        if ($messages > 0) {
+                            $pop3->GetConnectionName($connection_name);
+                            $message = $i;
+                            $message_file = 'pop3://' . $connection_name . '/' . $message;
+                            $mime = new MimeParser();
+                            $mime->decode_bodies = 1;
+                            $parameters = array(
+                                'File' => $message_file,
+                                'SkipBody' => 0,
+                            );
+                            $success = $mime->Decode($parameters, $decoded);
+                            if (!$success)
+                                echo '<h2>MIME message decoding error: ' . HtmlSpecialChars($mime->error) . "</h2>\n";
+                            else {
+                                if ($mime->Analyze($decoded[0], $results)) {
+                                    $mail = [];
+                                    $mail['subject'] = iconv($results['Encoding'], "UTF-8", $results['Subject']);
+                                    $mail['data'] = iconv($results['Encoding'], "UTF-8", $results['Data']);
+                                    $mailList[] = $mail;
+                                } else{
+                                    $error = 'MIME message analyse error: ' . $mime->error . "\n";
+                                }
+                            }
+                        }
+                    }
+                    if ($error == "" && ($error = $pop3->Close()) == ""){
+//                        $error = "Disconnected from the POP3 server , " . $pop3->hostname . "\n";
+                    }
+                }
+            }
+        }
+        if ($error != "") {
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 500, 'message' => 'error', 'content' => HtmlSpecialChars($error)  ]);
+        }
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 200, 'message' => 'success', 'content' => $mailList ]);
 
     }
 
