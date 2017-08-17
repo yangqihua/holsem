@@ -13,7 +13,8 @@ use app\common\model\amazon\Order as OrderModel;
 use app\common\model\amazon\OrderItem as OrderItemModel;
 use amazon\mail\POP3;
 use amazon\mail\MimeParser;
-use amazon\mail\Rfc822Address;
+use amazon\track\USPS;
+use Sauladam\ShipmentTracker\ShipmentTracker;
 
 class Order extends Api
 {
@@ -86,20 +87,15 @@ class Order extends Api
 
     }
 
-    public function getMail()
+    public function getMailList()
     {
-        $host = "pop.exmail.qq.com";
-        $user = "yangqihua@dowish.net";
-        $pass = "M5dE8kJipkkwSyat";
-
         stream_wrapper_register('pop3', '\amazon\mail\POP3Stream');
-
         $pop3 = new POP3();
-        $pop3->hostname = "pop.exmail.qq.com";             /* POP 3 server host name                      */
+        $pop3->hostname = "pop-mail.outlook.com";             /* POP 3 server host name                      */
         $pop3->port = 995;                         /* POP 3 server host port, usually 110 but some servers use other ports Gmail uses 995 */
         $pop3->tls = 1;                            /* Establish secure connections using TLS      */
-        $user = "yangqihua@dowish.net";                        /* Authentication user name                    */
-        $password = "M5dE8kJipkkwSyat";                    /* Authentication password                     */
+        $user = "sandy.williams2013@outlook.com";                        /* Authentication user name                    */
+        $password = "Sandy2017#";                    /* Authentication password                     */
         $pop3->realm = "";                         /* Authentication realm or domain              */
         $pop3->workstation = "";                   /* Workstation for NTLM authentication         */
         $apop = 0;                                 /* Use APOP authentication                     */
@@ -112,7 +108,7 @@ class Order extends Api
         if (($error = $pop3->Open()) == "") {
             if (($error = $pop3->Login($user, $password, $apop)) == "") {
                 if (($error = $pop3->Statistics($messages, $size)) == "") {
-                    $count = $messages - 3;
+                    $count = $messages - 10;
                     for ($i = $messages; $i >= $count; $i--) // grabs last 3 mails
                     {
                         if ($messages > 0) {
@@ -145,10 +141,34 @@ class Order extends Api
             }
         }
         if ($error != "") {
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 500, 'message' => 'error', 'content' => $error]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => 'error', 'content' => $error]);
         }
-        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMail', 'code' => 200, 'message' => 'success', 'content' => $mailList]);
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => $mailList]);
 
     }
+
+    public function getPackageStatus()
+    {
+        $USPStracker = ShipmentTracker::get('USPS');
+        $track = $USPStracker->track('9361289683090216690666');
+        if($track->delivered())
+        {
+            echo "Delivered to " . $track->getRecipient();
+        }
+        else
+        {
+            echo "Not delivered yet, The current status is " . $track->currentStatus();
+        }
+
+        $latestEvent = $track->latestEvent();
+
+        echo "The parcel was last seen in " . $latestEvent->getLocation() . " on " . $latestEvent->getDate()->format('Y-m-d');
+        echo "What they did: " . $latestEvent->description();
+        echo "The status was " . $latestEvent->getStatus();
+
+        dump($track->events());
+
+    }
+
 
 }
