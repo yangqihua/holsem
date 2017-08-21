@@ -11,10 +11,12 @@ namespace app\api\controller\amazon;
 use app\common\controller\Api;
 use app\common\model\amazon\Order as OrderModel;
 use app\common\model\amazon\OrderItem as OrderItemModel;
-use amazon\mail\POP3;
-use amazon\mail\MimeParser;
-use amazon\track\USPS;
 use Sauladam\ShipmentTracker\ShipmentTracker;
+
+use SSilence\ImapClient\ImapClientException;
+use SSilence\ImapClient\ImapClient as Imap;
+
+use app\admin\model\Config;
 
 class Order extends Api
 {
@@ -52,8 +54,8 @@ class Order extends Api
                     $order['has_items'] = 0;
                     $this->orderModel->data($order, true)->isUpdate(false)->save();
                 } else {
-                    // 只有订单状态改变了才更新
-                    if ($order['order_status'] != $oldOrder['order_status']) {
+                    // 只有订单状态改变了才更新 或 已经抓取到了其快递信息了。
+                    if ($order['order_status'] != $oldOrder['order_status'] || $oldOrder['ship_by'] != null) {
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                     }
@@ -89,84 +91,78 @@ class Order extends Api
 
     public function getMailList()
     {
-        stream_wrapper_register('pop3', '\amazon\mail\POP3Stream');
-        $pop3 = new POP3();
-        $pop3->hostname = "pop-mail.outlook.com";             /* POP 3 server host name                      */
-        $pop3->port = 995;                         /* POP 3 server host port, usually 110 but some servers use other ports Gmail uses 995 */
-        $pop3->tls = 1;                            /* Establish secure connections using TLS      */
-        $user = "sandy.williams2013@outlook.com";                        /* Authentication user name                    */
-        $password = "Sandy2017#";                    /* Authentication password                     */
-        $pop3->realm = "";                         /* Authentication realm or domain              */
-        $pop3->workstation = "";                   /* Workstation for NTLM authentication         */
-        $apop = 0;                                 /* Use APOP authentication                     */
-        $pop3->authentication_mechanism = "USER";  /* SASL authentication mechanism               */
-        $pop3->debug = 0;                          /* Output debug information                    */
-        $pop3->html_debug = 0;                     /* Debug information is in HTML                */
-        $pop3->join_continuation_header_lines = 1; /* Concatenate headers split in multiple lines */
+        $config = new Config();
+        // 注意这里是页面，不是从哪条开始
 
-        $mailList = [];
-        if (($error = $pop3->Open()) == "") {
-            if (($error = $pop3->Login($user, $password, $apop)) == "") {
-                if (($error = $pop3->Statistics($messages, $size)) == "") {
-                    $count = $messages - 10;
-                    for ($i = $messages; $i >= $count; $i--) // grabs last 3 mails
-                    {
-                        if ($messages > 0) {
-                            $pop3->GetConnectionName($connection_name);
-                            $message = $i;
-                            $message_file = 'pop3://' . $connection_name . '/' . $message;
-                            $mime = new MimeParser();
-                            $mime->decode_bodies = 1;
-                            $parameters = array(
-                                'File' => $message_file,
-                                'SkipBody' => 0,
-                            );
-                            $success = $mime->Decode($parameters, $decoded);
-                            if (!$success)
-                                $error .= 'MIME message decoding error: ' . HtmlSpecialChars($mime->error) . "\n";
-                            else {
-                                if ($mime->Analyze($decoded[0], $results)) {
-                                    $mail = [];
-                                    $mail['subject'] = iconv($results['Encoding'], "UTF-8", $results['Subject']);
-                                    $mail['data'] = iconv($results['Encoding'], "UTF-8", $results['Data']);
-                                    $mailList[] = $mail;
-                                } else {
-                                    $error .= 'MIME message analyse error: ' . $mime->error . "\n";
-                                }
-                            }
-                        }
+        $limit = 10;
+        $config_mail_index = $config->where("name", "mail_index")->find();
+        $mail_index = $config_mail_index['value'] / $limit;
+
+        $mailbox = 'imap-mail.outlook.com';
+        $username = 'sandy.williams2013@outlook.com';
+        $password = 'Sandy2017#';
+        $encryption = Imap::ENCRYPT_SSL;
+
+        try {
+            $imap = new Imap($mailbox, $username, $password, $encryption);
+
+        } catch (ImapClientException $error) {
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => $error->getMessage() . PHP_EOL, 'content' => $error->getMessage() . PHP_EOL]);
+        }
+        $imap->selectFolder('FBA Shipments');
+//        $overallMessages = $imap->countMessages();
+//        $unreadMessages = $imap->countUnreadMessages();
+
+        $emails = $imap->getMessages($limit, $mail_index);
+        $packages = [];
+        foreach ($emails as $email) {
+            $html = $email->message->text->jsonSerialize()['body'];
+            $package = [];
+            $findCount = preg_match('/Fulfillment Order \(([^\)]*)\)*./', $html, $matches);
+            if ($findCount && count($matches) == 2) {
+                $package['amazonOrderId'] = trim($matches[1]);
+                $findCount = preg_match('/Shipped By:(.*)Tracking/', $html, $matches);
+                if ($findCount && count($matches) == 2) {
+                    $package['shippedBy'] = trim($matches[1]);
+                    $findCount = preg_match('/Tracking No: ([^---]*)-------------/', $html, $matches);
+                    if ($findCount && count($matches) == 2) {
+                        $package['tracking'] = trim($matches[1]);
                     }
-                    $error .= $pop3->Close();
                 }
             }
+            $packages[] = $package;
         }
-        if ($error != "") {
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => 'error', 'content' => $error]);
-        }
-        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => $mailList]);
-
+        $config->where("id", $config_mail_index['id'])->update(['value' => ($config_mail_index['value'] + $limit)]);
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => $packages]);
     }
+
 
     public function getPackageStatus()
     {
-        $USPStracker = ShipmentTracker::get('USPS');
-        $track = $USPStracker->track('9361289683090216690666');
-        if($track->delivered())
-        {
+        $packageNumber = '1Z300VW20343361574';
+        $USPStracker = ShipmentTracker::get('UPS');
+        $track = $USPStracker->track($packageNumber);
+        if ($track->delivered()) {
             echo "Delivered to " . $track->getRecipient();
         }
-        else
-        {
-            echo "Not delivered yet, The current status is " . $track->currentStatus();
+        $currentStatus = $track->currentStatus();
+//        $latestEvent = $track->latestEvent();
+//
+//        echo "The parcel was last seen in " . $latestEvent->getLocation() . " on " . $latestEvent->getDate()->format('Y-m-d');
+//        echo "What they did: " . $latestEvent->getDescription();
+//        echo "The status was " . $latestEvent->getStatus();
+
+        $events = $track->events();
+        $trackData = [];
+        foreach ($events as $event){
+            $trackData['package_number'] = $packageNumber;
+            $trackData['status'] = $event->getStatus();
+            $trackData['date'] = $event->getDate();
+            $trackData['location'] = $event->getLocation();
+            $trackData['description'] = $event->getDescription();
         }
 
-        $latestEvent = $track->latestEvent();
 
-        echo "The parcel was last seen in " . $latestEvent->getLocation() . " on " . $latestEvent->getDate()->format('Y-m-d');
-        echo "What they did: " . $latestEvent->description();
-        echo "The status was " . $latestEvent->getStatus();
-
-        dump($track->events());
 
     }
 

@@ -22,7 +22,8 @@
         "topthink/think-captcha": "^1.0",
         "mtdowling/cron-expression": "^1.2",
         "phpmailer/phpmailer": "^5.2",
-        "sauladam/shipment-tracker": "^0.4.2"
+        "sauladam/shipment-tracker": "^0.4.2",
+        "ssilence/php-imap-client": "dev-master"
     },
     "config": {
         "preferred-install": "dist"
