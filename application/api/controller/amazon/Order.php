@@ -11,6 +11,7 @@ namespace app\api\controller\amazon;
 use app\common\controller\Api;
 use app\common\model\amazon\Order as OrderModel;
 use app\common\model\amazon\OrderItem as OrderItemModel;
+use app\common\model\amazon\Track as TrackmModel;
 use Sauladam\ShipmentTracker\ShipmentTracker;
 
 use SSilence\ImapClient\ImapClientException;
@@ -112,7 +113,6 @@ class Order extends Api
         $imap->selectFolder('FBA Shipments');
 //        $overallMessages = $imap->countMessages();
 //        $unreadMessages = $imap->countUnreadMessages();
-
         $emails = $imap->getMessages($limit, $mail_index);
         $packages = [];
         foreach ($emails as $email) {
@@ -139,29 +139,44 @@ class Order extends Api
 
     public function getPackageStatus()
     {
-        $packageNumber = '1Z300VW20343361574';
-        $USPStracker = ShipmentTracker::get('UPS');
-        $track = $USPStracker->track($packageNumber);
-        if ($track->delivered()) {
-            echo "Delivered to " . $track->getRecipient();
+        // $packageNumber = '1Z300VW20343361574';
+        // $packageNumber = '9361289683090216690666';
+        $order = $this->orderModel
+            ->where("has_delivered","<>","delivered")->where("package_number","<>","null")->where("ship_by","USPS")
+            ->find();
+        if(!$order){
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
         }
-        $currentStatus = $track->currentStatus();
-//        $latestEvent = $track->latestEvent();
-//
-//        echo "The parcel was last seen in " . $latestEvent->getLocation() . " on " . $latestEvent->getDate()->format('Y-m-d');
-//        echo "What they did: " . $latestEvent->getDescription();
-//        echo "The status was " . $latestEvent->getStatus();
+        $USPStracker = ShipmentTracker::get('USPS');
+        $track = $USPStracker->track($package['package_number']);
+        // 更新 order 中的 has_delivered 属性
+        $order['has_delivered'] = $track->currentStatus();
 
         $events = $track->events();
+        $trackModel = new TrackmModel();
+        $oldData = $trackModel->where('package_number',$order['package_number'])->select();
         $trackData = [];
         foreach ($events as $event){
-            $trackData['package_number'] = $packageNumber;
-            $trackData['status'] = $event->getStatus();
-            $trackData['date'] = $event->getDate();
-            $trackData['location'] = $event->getLocation();
-            $trackData['description'] = $event->getDescription();
-        }
+            $data = [];
+            $data['package_number'] = $order['package_number'];
+            $data['status'] = $event->getStatus();
+            $data['date'] = $event->getDate();
+            $data['location'] = $event->getLocation();
+            $data['description'] = $event->getDescription();
 
+            $flag = false;
+            foreach ($$oldData as $key => $value) {
+                if($value['date'] == $data['date']){
+                    $flag = true;
+                }
+            }
+            if(!$flag){
+                $trackModel->data($data, true)->isUpdate(false)->save();
+            }
+            $trackData[] = $data;
+        }
+        $this->orderModel->save($order,['id'=>$order['id']]);
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
 
 
     }
