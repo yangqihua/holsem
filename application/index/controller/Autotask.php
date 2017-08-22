@@ -107,7 +107,7 @@ class Autotask extends Controller
                     else
                     {
                         // 远程异步调用URL
-                        Http::sendAsyncRequest($crontab['content']);
+                        Http::sendAsyncRequest($crontab['content'],[],'GET');
                     }
                 }
                 else if ($crontab['type'] == 'sql')

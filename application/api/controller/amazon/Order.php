@@ -56,15 +56,15 @@ class Order extends Api
                 if (!$oldOrder) {
                     $order['has_items'] = 0;
                     $this->orderModel->data($order, true)->isUpdate(false)->save();
-                    $this->listOrderItems($order);
+                    $this->listOrderItems($order['amazon_order_id']);
                     sleep(8);
                 } else {
                     // 只有订单状态改变了才更新 或 已经抓取到了其快递信息了。
                     if ($order['order_status'] != $oldOrder['order_status'] || $oldOrder['ship_by'] != null) {
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
-                        $this->listOrderItems($order);
-                        sleep(8);
+                        $this->listOrderItems($order['amazon_order_id']);
+                        sleep(4);
                     }
                 }
             }
@@ -74,10 +74,9 @@ class Order extends Api
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => $orderListResult]);
     }
 
-    public function listOrderItems($order)
+    public function listOrderItems($amazon_order_id)
     {
-
-//        $order = $this->orderModel->where('has_items', 0)->find();
+        $order = $this->orderModel->where("amazon_order_id",$amazon_order_id)->find();
         if ($order != null) {
             $orderItemListResult = getOrderItemList($order['amazon_order_id']);
             if ($orderItemListResult['code'] == 200) {
@@ -161,12 +160,12 @@ class Order extends Api
     }
 
 
-    public function getPackageStatus($amazonOrderId)
+    public function getPackageStatus()
     {
         // $packageNumber = '1Z300VW20343361574';
         // $packageNumber = '9361289683090216690666';
         $order = $this->orderModel
-            ->where("amazon_order_id", $amazonOrderId)
+            ->where("has_delivered","<>","1")->where("package_number","<>","null")->where("ship_by","USPS")
             ->find();
         if (!$order) {
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
@@ -200,7 +199,12 @@ class Order extends Api
             $trackData[] = $data;
         }
         $this->orderModel->where('id',$order['id'])->update(['has_delivered'=>$order['has_delivered']]);
-        // 在这里执行发送邮件的操作
+        // TODO：在这里执行发送邮件的操作
+        if($order['has_delivered']==1){
+            // 1.发送邮件
+
+            // 2.更新order的has_send_mail 字段
+        }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
 
 

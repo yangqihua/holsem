@@ -31,8 +31,8 @@ if (!function_exists('getOrderList')) {
         $request->setMarketplaceId(config('amazon.marketplace_id'));
         $request->setMaxResultsPerPage(100);
 
-        // 去前两个小时的订单
-        $createAfter = date('c', time() - 10 * 60 - 2 * 60 * 60);
+        // 去前一个小时的订单
+        $createAfter = date('c', time() - 10 * 60 - 1 * 60 * 60);
         $createBefore = date('c', time() - 10 * 60);
 
         $request->setLastUpdatedAfter($createAfter);
