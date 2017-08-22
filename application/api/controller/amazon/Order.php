@@ -44,6 +44,7 @@ class Order extends Api
         if ($orderListResult['code'] == 200) {
             $lastOrders = $this->orderModel->select();
             foreach ($orderListResult['orderList'] as $key => $order) {
+                // 是否已经存在该 amazon_order_id
                 $oldOrder = false;
                 foreach ($lastOrders as $k => $v) {
                     if ($v['amazon_order_id'] == $order['amazon_order_id']) {
@@ -51,14 +52,19 @@ class Order extends Api
                         break;
                     }
                 }
+                // 不存在
                 if (!$oldOrder) {
                     $order['has_items'] = 0;
                     $this->orderModel->data($order, true)->isUpdate(false)->save();
+                    $this->listOrderItems($order);
+                    sleep(8);
                 } else {
                     // 只有订单状态改变了才更新 或 已经抓取到了其快递信息了。
                     if ($order['order_status'] != $oldOrder['order_status'] || $oldOrder['ship_by'] != null) {
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
+                        $this->listOrderItems($order);
+                        sleep(8);
                     }
                 }
             }
@@ -68,10 +74,10 @@ class Order extends Api
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => $orderListResult]);
     }
 
-    public function listOrderItems()
+    public function listOrderItems($order)
     {
 
-        $order = $this->orderModel->where('has_items', 0)->find();
+//        $order = $this->orderModel->where('has_items', 0)->find();
         if ($order != null) {
             $orderItemListResult = getOrderItemList($order['amazon_order_id']);
             if ($orderItemListResult['code'] == 200) {
@@ -95,13 +101,14 @@ class Order extends Api
         $config = new Config();
         // 注意这里是页面，不是从哪条开始
 
-        $limit = 10;
         $config_mail_index = $config->where("name", "mail_index")->find();
-        $mail_index = $config_mail_index['value'] / $limit;
+        $config_mail_limit = $config->where("name", "mail_limit")->find();
+        $config_mail_count = $config->where("name", "mail_count")->find();
 
-        $mailbox = 'imap-mail.outlook.com';
-        $username = 'sandy.williams2013@outlook.com';
-        $password = 'Sandy2017#';
+        $mail_index = $config_mail_index['value'] / $config_mail_limit['value'];
+        $mailbox  = config('mail.host');
+        $username = config('mail.username');
+        $password = config('mail.password');
         $encryption = Imap::ENCRYPT_SSL;
 
         try {
@@ -111,9 +118,13 @@ class Order extends Api
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => $error->getMessage() . PHP_EOL, 'content' => $error->getMessage() . PHP_EOL]);
         }
         $imap->selectFolder('FBA Shipments');
-//        $overallMessages = $imap->countMessages();
-//        $unreadMessages = $imap->countUnreadMessages();
-        $emails = $imap->getMessages($limit, $mail_index);
+        $mailCount = $imap->countMessages();
+        $config->where("id", $config_mail_count['id'])->update(['value' => $mailCount]);
+        if($mailCount-$config_mail_limit['value']<$config_mail_index['value']){
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => '最后一页邮件已经读完']);
+        }
+
+        $emails = $imap->getMessages($config_mail_limit['value'], $mail_index);
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
@@ -131,32 +142,45 @@ class Order extends Api
                 }
             }
             $packages[] = $package;
+
+            $order = $this->orderModel->where("amazon_order_id", $package['amazonOrderId'])->find();
+            if ($order) {
+                $this->orderModel->where('id',$order['id'])->update(['ship_by'=>$package['shippedBy'],'package_number'=>$package['tracking']]);
+            } else {
+                $order = ['amazon_order_id' => $package['amazonOrderId'], 'ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']];
+                $this->orderModel->data($order, true)
+                    ->isUpdate(false)->save();
+            }
+            // 去获取快递信息
+//            $this->getPackageStatus($order['amazon_order_id']);
+//            sleep(5);
+
         }
-        $config->where("id", $config_mail_index['id'])->update(['value' => ($config_mail_index['value'] + $limit)]);
+        $config->where("id", $config_mail_index['id'])->update(['value' => ($config_mail_index['value'] + $config_mail_limit['value'])]);
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => $packages]);
     }
 
 
-    public function getPackageStatus()
+    public function getPackageStatus($amazonOrderId)
     {
         // $packageNumber = '1Z300VW20343361574';
         // $packageNumber = '9361289683090216690666';
         $order = $this->orderModel
-            ->where("has_delivered","<>","delivered")->where("package_number","<>","null")->where("ship_by","USPS")
+            ->where("amazon_order_id", $amazonOrderId)
             ->find();
-        if(!$order){
+        if (!$order) {
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
         }
         $USPStracker = ShipmentTracker::get('USPS');
-        $track = $USPStracker->track($package['package_number']);
+        $track = $USPStracker->track($order['package_number']);
         // 更新 order 中的 has_delivered 属性
-        $order['has_delivered'] = $track->currentStatus();
+        $order['has_delivered'] = $track->currentStatus()=='delivered'?'1':'0';
 
         $events = $track->events();
         $trackModel = new TrackmModel();
-        $oldData = $trackModel->where('package_number',$order['package_number'])->select();
+        $oldData = $trackModel->where('package_number', $order['package_number'])->select();
         $trackData = [];
-        foreach ($events as $event){
+        foreach ($events as $event) {
             $data = [];
             $data['package_number'] = $order['package_number'];
             $data['status'] = $event->getStatus();
@@ -165,17 +189,18 @@ class Order extends Api
             $data['description'] = $event->getDescription();
 
             $flag = false;
-            foreach ($$oldData as $key => $value) {
-                if($value['date'] == $data['date']){
+            foreach ($oldData as $key => $value) {
+                if ($value['date'] == $data['date']) {
                     $flag = true;
                 }
             }
-            if(!$flag){
+            if (!$flag) {
                 $trackModel->data($data, true)->isUpdate(false)->save();
             }
             $trackData[] = $data;
         }
-        $this->orderModel->save($order,['id'=>$order['id']]);
+        $this->orderModel->where('id',$order['id'])->update(['has_delivered'=>$order['has_delivered']]);
+        // 在这里执行发送邮件的操作
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
 
 
