@@ -64,14 +64,14 @@ class Order extends Api
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                         $this->listOrderItems($order['amazon_order_id']);
-                        sleep(4);
+                        sleep(8);
                     }
                 }
             }
         } else {
             // TODO: 请求失败的处理
         }
-        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => $orderListResult]);
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => '获取订单成功']);
     }
 
     public function listOrderItems($amazon_order_id)
