@@ -38,7 +38,8 @@ class Order extends Api
         return json(['title' => '执行order测试', 'time' => date("Y-m-d H:i:s"), 'code' => 0]);
     }
 
-    public function getOrder(){
+    public function getOrder()
+    {
         return getOrder("114-3438471-2729820");
     }
 
@@ -151,7 +152,7 @@ class Order extends Api
             if ($order) {
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
             } else { // 不存在则访问 aws api 获取订单详情 和 订单的商品
-                if($package['amazonOrderId']){
+                if ($package['amazonOrderId']) {
                     $awsOrderResult = getOrder($package['amazonOrderId']);
                     $awsOrder = $awsOrderResult['order'];
                     $awsOrder['has_items'] = 0;
@@ -177,35 +178,28 @@ class Order extends Api
         $config = new Config();
         $order_usps_index = $config->where("name", "order_usps_index")->find();
         $order_usps_count = $this->orderModel
-            ->where("deliver_status", "<>", "delivered")->where("package_number", "<>", "null")->where("ship_by", "USPS")
+            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")->where("package_number", "<>", "null")->where("ship_by", "USPS")
             ->count();
         $config->save(['value' => $order_usps_count], ['name' => 'order_usps_count']);
         $usps_index = intval($order_usps_index['value']);
         // 重新轮询
-        if ($usps_index >= $order_usps_count || $usps_index == 0) {
+        if ($usps_index >= $order_usps_count) {
             $usps_index = 0;
-            $order = $this->orderModel
-                ->where("deliver_status", "<>", "delivered")->where("package_number", "<>", "null")->where("ship_by", "USPS")
-                ->find();
-        } else {
-            $orders = $this->orderModel
-                ->where("deliver_status", "<>", "delivered")->where("package_number", "<>", "null")->where("ship_by", "USPS")
-                ->limit($usps_index, $usps_index)
-                ->select();
-            $order = false;
-            if ($orders && count($orders) == 1) {
-                $order = $orders[0];
-            }
         }
-        $usps_index += 1;
-        $config->update(['id' => $order_usps_index['id'], 'value' => $usps_index]);
+        $orders = $this->orderModel
+            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")->where("package_number", "<>", "null")->where("ship_by", "USPS")
+            ->limit($usps_index, 1)
+            ->select();
+        $order = false;
+        if ($orders && count($orders) == 1) {
+            $order = $orders[0];
+        }
+
         if (!$order) {
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
         }
         $USPStracker = ShipmentTracker::get('USPS');
         $track = $USPStracker->track($order['package_number']);
-        // 更新 order 中的 deliver_status 属性
-        $order['deliver_status'] = $track->currentStatus();
 
         $events = $track->events();
         $trackModel = new TrackmModel();
@@ -230,12 +224,25 @@ class Order extends Api
             }
             $trackData[] = $data;
         }
-        $this->orderModel->where('id', $order['id'])->update(['deliver_status' => $order['deliver_status']]);
+        $deliver_status_arr = explode("_", $order['deliver_status']);
+        // 更新 order 中的 deliver_status 属性
+        $order['deliver_status'] = $track->currentStatus();
+        $deliver_status = $order['deliver_status'];
+        if (count($deliver_status_arr) == 2) {
+            $track_count = $deliver_status_arr[1] + 1;
+            $deliver_status = $deliver_status . "_" . $track_count;
+        } else {
+            $deliver_status = $deliver_status . "_1";
+        }
+
+        $this->orderModel->where('id', $order['id'])->update(['deliver_status' => $deliver_status]);
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered') {
             // 1.发送邮件
 
             // 2.更新order的has_send_mail 字段
+        } else { // 只有在非 delivered的情况下才往后移动
+            $config->update(['id' => $order_usps_index['id'], 'value' => ($usps_index + 1)]);
         }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
 
