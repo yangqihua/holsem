@@ -10,6 +10,10 @@ class Http
 
     /**
      * 发送一个POST请求
+     * @param $url
+     * @param array $params
+     * @param array $options
+     * @return mixed|string
      */
     public static function post($url, $params = [], $options = [])
     {
@@ -19,6 +23,10 @@ class Http
 
     /**
      * 发送一个GET请求
+     * @param $url
+     * @param array $params
+     * @param array $options
+     * @return mixed|string
      */
     public static function get($url, $params = [], $options = [])
     {
