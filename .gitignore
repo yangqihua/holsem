@@ -11,3 +11,4 @@ public/assets/libs/
 .config.inc.php
 /extend/amazon/order/Samples
 /application/api/config.php
+/application/database.php
