@@ -100,6 +100,10 @@ class Order extends Api
 
     }
 
+    /*
+     *  每次去读指定封数邮件，如果该orderId对应的记录没有，
+     *  则去获取对应orderId的order详情和对应的orderItem
+     */
     public function getMailList()
     {
         $config = new Config();
@@ -128,7 +132,7 @@ class Order extends Api
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => '最后一页邮件已经读完']);
         }
 
-        $emails = $imap->getMessages($config_mail_limit['value'], $mail_index);
+        $emails = $imap->getMessages($config_mail_limit['value'], $mail_index,'ASC');
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
@@ -170,7 +174,9 @@ class Order extends Api
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => $packages]);
     }
 
-
+    /*
+     * 轮询 order 里面没有 deliver 的订单 ， 每次查询一个
+     */
     public function getPackageStatus()
     {
         // $packageNumber = '1Z300VW20343361574';
