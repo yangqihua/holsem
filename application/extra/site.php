@@ -35,9 +35,9 @@ return array (
   'mail_verify_type' => '0',
   'mail_from' => 'yangqihua@dowish.net',
   '嘻嘻嘻' => 'value',
-  'mail_index' => '70705',
-  'mail_limit' => '5',
+  'mail_index' => '70710',
+  'mail_limit' => '3',
   'mail_count' => '70877',
-  'order_usps_count' => '0',
-  'order_usps_index' => '0',
+  'order_usps_count' => '3',
+  'order_usps_index' => '2',
 );

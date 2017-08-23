@@ -1,6 +1,7 @@
 <?php
 
 use amazon\order\model\ListOrderRequest;
+use amazon\order\model\GetOrderRequest;
 use amazon\order\model\ListOrderItemsRequest;
 use amazon\order\OrderClient;
 use amazon\order\OrderException;
@@ -65,6 +66,66 @@ if (!function_exists('getOrderList')) {
             return ['nextToken' => $nextToken, 'orderList' => $orderList, 'message' => 'ok', 'code' => 200];
         } catch (OrderException $ex) {
             return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
+        }
+    }
+
+}
+
+if (!function_exists('getOrder($orderId)')) {
+
+    function getOrder($orderId)
+    {
+        $config = array(
+            'ServiceURL' => config('amazon.service_url'),
+            'ProxyHost' => null,
+            'ProxyPort' => -1,
+            'ProxyUsername' => null,
+            'ProxyPassword' => null,
+            'MaxErrorRetry' => 3,
+        );
+
+        $service = new OrderClient(
+            config('amazon.aws_access_key_id'),
+            config('amazon.aws_secret_access_key'),
+            config('amazon.application_name'),
+            config('amazon.application_version'),
+            $config);
+
+        $request = new GetOrderRequest();
+        $request->setAmazonOrderId($orderId);
+        $request->setSellerId(config('amazon.merchant_id'));
+
+        try {
+            $response = $service->GetOrder($request);
+            $orderResult = $response->getGetOrderResult();
+            $orders = $orderResult->getOrders();
+            $orderList = [];
+            foreach ($orders as $order) {
+                $orderResult = [];
+                $orderResult["latest_ship_date"] = datetime(strtotime($order->getLatestShipDate()));
+                $orderResult["order_type"] = $order->getOrderType();
+                $orderResult["purchase_date"] = datetime(strtotime($order->getPurchaseDate()));
+                $orderResult["amazon_order_id"] = $order->getAmazonOrderId();
+                $orderResult["buyer_email"] = $order->getBuyerEmail();
+                $orderResult["is_replacement_order"] = $order->getIsReplacementOrder();
+                $orderResult["last_update_date"] = datetime(strtotime($order->getLastUpdateDate()));
+                $orderResult["number_of_items_shipped"] = $order->getNumberOfItemsShipped();
+                $orderResult["ship_service_level"] = $order->getShipServiceLevel();
+                $orderResult["order_status"] = $order->getOrderStatus();
+                $orderResult["sales_channel"] = $order->getSalesChannel();
+                $orderResult["is_business_order"] = $order->getIsBusinessOrder();
+                $orderResult["number_of_items_unshipped"] = $order->getNumberOfItemsUnshipped();
+                $orderResult["buyer_name"] = $order->getBuyerName();
+                $orderResult["fulfillment_channel"] = $order->getFulfillmentChannel();
+                $orderList[] = $orderResult;
+            }
+            $order = [];
+            if(count($orderList)==1){
+                $order = $orderList[0];
+            }
+            return ['order' => $order, 'message' => 'ok', 'code' => 200];
+        } catch (OrderException $ex) {
+            return ['order'=>[],'message' => $ex->getMessage(), 'code' => $ex->getStatusCode()];
         }
     }
 

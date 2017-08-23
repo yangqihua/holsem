@@ -38,6 +38,10 @@ class Order extends Api
         return json(['title' => '执行order测试', 'time' => date("Y-m-d H:i:s"), 'code' => 0]);
     }
 
+    public function getOrder(){
+        return getOrder("114-3438471-2729820");
+    }
+
     public function listOrders()
     {
         $orderListResult = getOrderList();
@@ -143,16 +147,22 @@ class Order extends Api
             $packages[] = $package;
 
             $order = $this->orderModel->where("amazon_order_id", $package['amazonOrderId'])->find();
+            // 如果已经存在该订单
             if ($order) {
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
-            } else {
-                $order = ['amazon_order_id' => $package['amazonOrderId'], 'ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']];
-                $this->orderModel->data($order, true)
-                    ->isUpdate(false)->save();
+            } else { // 不存在则访问 aws api 获取订单详情 和 订单的商品
+                if($package['amazonOrderId']){
+                    $awsOrderResult = getOrder($package['amazonOrderId']);
+                    $awsOrder = $awsOrderResult['order'];
+                    $awsOrder['has_items'] = 0;
+                    $awsOrder['ship_by'] = $package['shippedBy'];
+                    $awsOrder['package_number'] = $package['tracking'];
+                    $awsOrder['has_items'] = 0;
+                    $this->orderModel->data($awsOrder, true)->isUpdate(false)->save();
+                    $this->listOrderItems($package['amazonOrderId']);
+                    sleep(5);
+                }
             }
-            // 去获取快递信息
-//            $this->getPackageStatus($order['amazon_order_id']);
-//            sleep(5);
 
         }
         $config->where("id", $config_mail_index['id'])->update(['value' => ($config_mail_index['value'] + $config_mail_limit['value'])]);
