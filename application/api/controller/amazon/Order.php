@@ -136,6 +136,7 @@ class Order extends Api
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
+            $html = ' Fulfillment Order (114-9582930-8642631) to one of your customers: Shipped By: USPS Tracking No: 9361289692090542135037-----------';
             $package = [];
             $findCount = preg_match('/Fulfillment Order \(([^\)]*)\)*./', $html, $matches);
             if ($findCount && count($matches) == 2) {
@@ -143,7 +144,7 @@ class Order extends Api
                 $findCount = preg_match('/Shipped By:(.*)Tracking/', $html, $matches);
                 if ($findCount && count($matches) == 2) {
                     $package['shippedBy'] = trim($matches[1]);
-                    $findCount = preg_match('/Tracking No: ([^---]*)-------------/', $html, $matches);
+                    $findCount = preg_match('/Tracking No: ([^---]*)-------/', $html, $matches);
                     if ($findCount && count($matches) == 2) {
                         $package['tracking'] = trim($matches[1]);
                     }
@@ -153,7 +154,7 @@ class Order extends Api
 
             $order = $this->orderModel->where("amazon_order_id", $package['amazonOrderId'])->find();
             // 如果已经存在该订单
-            if ($order && $order['buyer_email']) {
+            if ($order && $order['buyer_email'] && $order['order_status'] == 'Shipped') {
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
             } else { // 不存在则访问 aws api 获取订单详情 和 订单的商品
                 if ($order) {
