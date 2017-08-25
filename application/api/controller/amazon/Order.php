@@ -247,14 +247,24 @@ class Order extends Api
 
         $this->orderModel->where('id', $order['id'])->update(['deliver_status' => $deliver_status]);
         // TODO：在这里执行发送邮件的操作
-        if ($order['deliver_status'] == 'delivered') {
+        if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
-
+//            $receiver_address = $order['buyer_email'];
+            $receiver_address = '904693433@qq.com';
+            $name = $order['buyer_name'];
+            $orderCategoryList = $this->orderItemModel->where('order_id',$order['id'])->column('seller_sku');
+            $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
+            $this->orderModel->where('id', $order['id'])->update(['has_send_mail' => 1]);
+            if($result && $result['code']==200){
+                return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+            }else{
+                return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
+            }
             // 2.更新order的has_send_mail 字段
         } else { // 只有在非 delivered的情况下才往后移动
             $config->update(['id' => $order_usps_index['id'], 'value' => ($usps_index + 1)]);
-        }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+        }
 
 
     }

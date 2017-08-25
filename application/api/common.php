@@ -6,6 +6,8 @@ use amazon\order\model\ListOrderItemsRequest;
 use amazon\order\OrderClient;
 use amazon\order\OrderException;
 
+use app\common\library\Email;
+
 
 if (!function_exists('getOrderList')) {
 
@@ -120,12 +122,12 @@ if (!function_exists('getOrder($orderId)')) {
                 $orderList[] = $orderResult;
             }
             $order = [];
-            if(count($orderList)==1){
+            if (count($orderList) == 1) {
                 $order = $orderList[0];
             }
             return ['order' => $order, 'message' => 'ok', 'code' => 200];
         } catch (OrderException $ex) {
-            return ['order'=>[],'message' => $ex->getMessage(), 'code' => $ex->getStatusCode()];
+            return ['order' => [], 'message' => $ex->getMessage(), 'code' => $ex->getStatusCode()];
         }
     }
 
@@ -189,6 +191,47 @@ if (!function_exists('getOrderItemList($orderId)')) {
         }
     }
 
+}
+
+if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategoryList)')) {
+    function sendCustomersMail($receiver_address, $name, $orderCategoryList)
+    {
+        $name = $name ? $name : 'customer';
+        $holsems = [];
+        foreach ($orderCategoryList as $key => $value) {
+            $v = '';
+            if($value == 'HOLSEM-U3'){
+                $v = "\n    https://www.amazon.com/dp/B01LD06EQ4";
+            }else if($value == 'HOLSEM-X5'){
+                $v = "\n    https://www.amazon.com/dp/B01EV3DW5Q";
+            }else if($value == 'HOLSEM-X5B'){
+                $v = "\n    https://www.amazon.com/dp/B01LXIDES4";
+            }else if($value == 'HOLSEM-X8'){
+                $v = "\n    https://www.amazon.com/dp/B01ASWH5KW";
+            }else if($value == 'HOLSEM-X8B'){
+                $v = "\n    https://www.amazon.com/dp/B01LYHJMTD";
+            }else if($value == 'HOLSEM-X12' || $value == 'HOLSEM-S12'){
+                $v = "\n    https://www.amazon.com/dp/B01H14SFRM";
+            }else if($value == 'HOLSEM-X12B'){
+                $v = "\n    https://www.amazon.com/dp/B01LYHEC16";
+            }
+            $holsems[] = $v;
+        }
+        $holsemString = join("", $holsems);
+        $subject = config('mail_text.subject');
+        $message = sprintf(config('mail_text.content'), $name, $holsemString);
+        $email = new Email;
+        $result = $email
+            ->to($receiver_address)
+            ->subject($subject)
+            ->message($message,false)
+            ->send();
+        if ($result) {
+            return ['code' => 200, 'message' => 'success'];
+        } else {
+            return ['code' => 500, 'message' => $email->getError()];
+        }
+    }
 }
 
 if (!function_exists('object_array')) {
