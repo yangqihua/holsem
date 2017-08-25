@@ -136,7 +136,7 @@ class Order extends Api
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
-            $html = ' Fulfillment Order (114-9582930-8642631) to one of your customers: Shipped By: USPS Tracking No: 9361289692090542135037-----------';
+//            $html = ' Fulfillment Order (114-9582930-8642631) to one of your customers: Shipped By: USPS Tracking No: 9361289692090542135037-----------';
             $package = [];
             $findCount = preg_match('/Fulfillment Order \(([^\)]*)\)*./', $html, $matches);
             if ($findCount && count($matches) == 2) {
