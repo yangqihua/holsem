@@ -132,7 +132,7 @@ class Order extends Api
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 200, 'message' => 'success', 'content' => '最后一页邮件已经读完']);
         }
 
-        $emails = $imap->getMessages($config_mail_limit['value'], $mail_index,'ASC');
+        $emails = $imap->getMessages($config_mail_limit['value'], $mail_index, 'ASC');
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
@@ -153,9 +153,12 @@ class Order extends Api
 
             $order = $this->orderModel->where("amazon_order_id", $package['amazonOrderId'])->find();
             // 如果已经存在该订单
-            if ($order) {
+            if ($order && $order['buyer_email']) {
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
             } else { // 不存在则访问 aws api 获取订单详情 和 订单的商品
+                if ($order) {
+                    $this->orderModel->where('id', $order['id'])->delete();
+                }
                 if ($package['amazonOrderId']) {
                     $awsOrderResult = getOrder($package['amazonOrderId']);
                     $awsOrder = $awsOrderResult['order'];
