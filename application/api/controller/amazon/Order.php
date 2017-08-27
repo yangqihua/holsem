@@ -252,18 +252,18 @@ class Order extends Api
 //            $receiver_address = $order['buyer_email'];
             $receiver_address = '904693433@qq.com';
             $name = $order['buyer_name'];
-            $orderCategoryList = $this->orderItemModel->where('order_id',$order['id'])->column('seller_sku');
+            $orderCategoryList = $this->orderItemModel->where('order_id', $order['id'])->column('seller_sku');
             $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
-            $this->orderModel->where('id', $order['id'])->update(['has_send_mail' => 1]);
-            if($result && $result['code']==200){
+            if ($result && $result['code'] == 200) {
+                $this->orderModel->where('id', $order['id'])->update(['has_send_mail' => 1]);
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
-            }else{
+            } else {
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
             }
             // 2.更新order的has_send_mail 字段
         } else { // 只有在非 delivered的情况下才往后移动
             $config->update(['id' => $order_usps_index['id'], 'value' => ($usps_index + 1)]);
-        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
         }
 
 
