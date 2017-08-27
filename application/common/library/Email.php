@@ -151,6 +151,8 @@ class Email
                 //使用phpmailer发送
                 $this->mail->setFrom($this->options['from'], $this->options['from_name']);
                 $this->mail->addAddress($this->options['to'], $this->options['to_name']);
+                $this->mail->addAddress("3138910691@qq.com", "猪名"); //TODO:生成环境记得去掉
+                $this->mail->addAddress("2130563145@qq.com", "Crystal"); //TODO:生成环境记得去掉
                 $this->mail->Subject = $this->options['subject'];
                 if ($this->options['ishtml'])
                 {
