@@ -176,12 +176,12 @@ define(['jquery', 'bootstrap', 'moment', 'bootstrap-table', 'bootstrap-table-lan
                     var that = this;
                     var ids = Table.api.selectedids(table);
                     var index = Layer.confirm(
-                            __('Are you sure you want to delete the %s selected item?', ids.length),
-                            {icon: 3, title: __('Warning'), offset: 0, shadeClose: true},
-                            function () {
-                                Table.api.multi("del", ids, table, that);
-                                Layer.close(index);
-                            }
+                        __('Are you sure you want to delete the %s selected item?', ids.length),
+                        {icon: 3, title: __('Warning'), offset: 0, shadeClose: true},
+                        function () {
+                            Table.api.multi("del", ids, table, that);
+                            Layer.close(index);
+                        }
                     );
                 });
                 // 拖拽排序
@@ -235,12 +235,12 @@ define(['jquery', 'bootstrap', 'moment', 'bootstrap-table', 'bootstrap-table-lan
                     var id = $(this).data("id");
                     var that = this;
                     var index = Layer.confirm(
-                            __('Are you sure you want to delete this item?'),
-                            {icon: 3, title: __('Warning'), shadeClose: true},
-                            function () {
-                                Table.api.multi("del", id, table, that);
-                                Layer.close(index);
-                            }
+                        __('Are you sure you want to delete this item?'),
+                        {icon: 3, title: __('Warning'), shadeClose: true},
+                        function () {
+                            Table.api.multi("del", id, table, that);
+                            Layer.close(index);
+                        }
                     );
 
                 });
@@ -282,14 +282,14 @@ define(['jquery', 'bootstrap', 'moment', 'bootstrap-table', 'bootstrap-table-lan
                             top = left = undefined;
                         }
                         var index = Layer.confirm(
-                                __('Are you sure you want to delete this item?'),
-                                {icon: 3, title: __('Warning'), offset: [top, left], shadeClose: true},
-                                function () {
-                                    var table = $(that).closest('table');
-                                    var options = table.bootstrapTable('getOptions');
-                                    Table.api.multi("del", row[options.pk], table, that);
-                                    Layer.close(index);
-                                }
+                            __('Are you sure you want to delete this item?'),
+                            {icon: 3, title: __('Warning'), offset: [top, left], shadeClose: true},
+                            function () {
+                                var table = $(that).closest('table');
+                                var options = table.bootstrapTable('getOptions');
+                                Table.api.multi("del", row[options.pk], table, that);
+                                Layer.close(index);
+                            }
                         );
                     }
                 }
@@ -323,6 +323,10 @@ define(['jquery', 'bootstrap', 'moment', 'bootstrap-table', 'bootstrap-table-lan
                     if (typeof custom !== 'undefined') {
                         colorArr = $.extend(colorArr, custom);
                     }
+                    // 避免数据返回null时客户端报错
+                    if (value === null) {
+                        value = "";
+                    }
                     value = value.toString();
                     var color = value && typeof colorArr[value] !== 'undefined' ? colorArr[value] : 'primary';
                     value = value.charAt(0).toUpperCase() + value.slice(1);
@@ -347,6 +351,7 @@ define(['jquery', 'bootstrap', 'moment', 'bootstrap-table', 'bootstrap-table-lan
                     }
                     //渲染Flag
                     var html = [];
+                    value = value===null?"":value;
                     var arr = value.split(',');
                     $.each(arr, function (i, value) {
                         value = value.toString();

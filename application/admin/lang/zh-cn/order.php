@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'Id'  =>  '主键id',
+    'Amazon_order_id'  =>  '订单id',
+    'Package_number'  =>  '快递单号',
+    'Ship_by'  =>  '快递公司',
+    'Deliver_status'  =>  '快递状态(爬取次数)',
+    'Buyer_email'  =>  '买家邮箱',
+    'Buyer_name'  =>  '买家姓名',
+    'Order_status'  =>  '订单状态',
+    'Create_time'  =>  '创建时间',
+    'Update_time'  =>  '更新时间',
+    'Has_send_mail' => '好评邮件',
+    'Sales_channel' => '购买渠道',
+    'Last_update_date' => '订单更新日期',
+    'Order_type' => '订单类型',
+    'Purchase_date' => '购买日期',
+    'Is_business_order' => '是否商业订单',
+    'Ship_service_level' => '配送级别',
+    'Number_of_items_shipped' => '已发货数量',
+    'Number_of_items_unshipped' => '未发货数量',
+    'Fulfillment_channel' => '配送方式',
+    'Latest_ship_date' => '承诺最后发货日',
+    'Is_replacement_order' => 'IsReplacementOrder',
+];

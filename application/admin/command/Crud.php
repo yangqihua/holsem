@@ -253,8 +253,8 @@ class Crud extends Command
         //最终将生成的文件路径
         $controllerFile = $adminPath . 'controller' . DS . $controllerFile;
         $javascriptFile = ROOT_PATH . 'public' . DS . 'assets' . DS . 'js' . DS . 'backend' . DS . $controllerUrl . '.js';
-        $addFile = $viewDir . 'add.html';
-        $editFile = $viewDir . 'edit.html';
+        $addFile = $viewDir . 'tracker.html';
+        $editFile = $viewDir . 'items.html';
         $indexFile = $viewDir . 'index.html';
         $langFile = $adminPath . 'lang' . DS . Lang::detect() . DS . $controllerUrl . '.php';
 

@@ -1,0 +1,26 @@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th style="width: 100px">seller sku</th>
+        <th>asin</th>
+        <th>价格</th>
+        <th>详情</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="items" id="item"  }
+    <tr>
+        <td>{$item.seller_sku}</td>
+        <td>{$item.asin}</td>
+        <td>{$item.item_price}</td>
+        <td>{$item.title}</td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<div class="hide layer-footer">
+    <label class="control-label col-xs-12 col-sm-2"></label>
+    <div class="col-xs-12 col-sm-8">
+        <button type="reset" class="btn btn-primary btn-embossed btn-close" onclick="Layer.closeAll();">{:__('Close')}</button>
+    </div>
+</div>
