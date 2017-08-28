@@ -22,7 +22,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pk: 'id',
                 //可以控制是否默认显示搜索单表,false则隐藏,默认为false
                 searchFormVisible: true,
-                sortName: 'update_time',
+                sortName: 'id',
                 sortOrder: 'desc',
                 columns: [
                     [
