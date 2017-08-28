@@ -11,7 +11,7 @@ return [
     'Order_status'  =>  '订单状态',
     'Create_time'  =>  '创建时间',
     'Update_time'  =>  '更新时间',
-    'Has_send_mail' => '好评邮件',
+    'Has_send_mail' => '求好评邮件',
     'Sales_channel' => '购买渠道',
     'Last_update_date' => '订单更新日期',
     'Order_type' => '订单类型',

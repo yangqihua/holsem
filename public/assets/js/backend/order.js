@@ -20,9 +20,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
-                sortName: 'id',
                 //可以控制是否默认显示搜索单表,false则隐藏,默认为false
-                searchFormVisible: false,
+                searchFormVisible: true,
+                sortName: 'update_time',
+                sortOrder: 'desc',
                 columns: [
                     [
                         {checkbox: true},

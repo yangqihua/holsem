@@ -12,6 +12,9 @@ class Order extends Model
 
     protected $autoWriteTimestamp = 'int';
 
+    protected $createTime = 'create_time';
+    protected $updateTime = 'update_time';
+
     //自定义初始化
     protected function initialize()
     {
