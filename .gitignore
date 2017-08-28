@@ -13,4 +13,5 @@ public/assets/libs/
 /application/api/config.php
 /application/database.php
 /application/config.php
+/application/extra/site.php
 *.log
