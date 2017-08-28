@@ -154,7 +154,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         delivered: 'success', in_transit: 'warning', unknown: 'danger',  // package status
                     };
                     var html = [];
-                    value = value === null ? "无状态" : value;
+                    value = (value===null || value==='') ? "未爬取" : value;
                     var arr = value.split("_");
                     $.each(arr, function (i, value) {
                         var color = value && typeof colorArr[value] !== 'undefined' ? colorArr[value] : 'primary';
