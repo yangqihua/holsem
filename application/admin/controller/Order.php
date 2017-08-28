@@ -46,7 +46,7 @@ class Order extends Backend
         $tracker = new Track();
         $id = input("id","0");
         $packageNumber = $this->model->where('id',$id)->value('package_number');
-        $rows = $tracker->where('package_number',$packageNumber)->select();
+        $rows = $tracker->where('package_number',$packageNumber)->order('date', 'desc')->select();
         $this->view->assign("items", $rows);
         return $this->view->fetch();
     }

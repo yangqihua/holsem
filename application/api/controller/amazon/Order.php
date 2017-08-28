@@ -249,8 +249,8 @@ class Order extends Api
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
-//            $receiver_address = $order['buyer_email'];
-            $receiver_address = '904693433@qq.com';
+            $receiver_address = $order['buyer_email'];
+//            $receiver_address = '904693433@qq.com';
             $name = $order['buyer_name'];
             $orderCategoryList = $this->orderItemModel->where('order_id', $order['id'])->column('seller_sku');
             $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
