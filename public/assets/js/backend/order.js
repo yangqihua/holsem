@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         // {field: 'id', title: __('Id')},
                         {field: 'amazon_order_id', title: __('Amazon_order_id'), style: 'width:228px'},
                         {field: 'package_number', title: __('Package_number')},
-                        {field: 'ship_by', title: __('Ship_by'), formatter: Table.api.formatter.search},
+                        {field: 'ship_by', title: __('Ship_by'), formatter: Controller.api.formatter.shipBy},
                         // {field: 'has_items', title: __('Has_items'),visible: false},
                         {
                             field: 'order_status',
@@ -148,6 +148,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     value = value === null ? "无状态" : value;
                     var color = value && typeof colorArr[value] !== 'undefined' ? colorArr[value] : 'primary';
                     return '<span class="label label-' + color + '">' + __(value) + '</span>';
+                },
+                shipBy: function (value, row, index) {
+                    value = value===null?'':value.toString();
+                    return '<a href="javascript:;" class="searchit" data-field="' + this.field + '" data-value="' + value + '">' + value + '</a>';
                 },
                 packageStatus: function (value, row, index) {
                     var colorArr = {

@@ -64,8 +64,9 @@ class Order extends Api
                     $this->listOrderItems($order['amazon_order_id']);
                     sleep(8);
                 } else {
-                    // 只有订单状态改变了才更新 或 已经抓取到了其快递信息了。
-                    if ($order['order_status'] != $oldOrder['order_status'] || $oldOrder['ship_by'] != null) {
+                    // 只有订单状态改变了才更新， 已经读了邮件了就不需要更新了，读邮件会更新到最新状态。
+                    if ($order['order_status'] != $oldOrder['order_status'] && ($oldOrder['ship_by'] == null
+                        || $oldOrder['ship_by'] == '' || $oldOrder['ship_by'] == '未配送')) {
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                         $this->listOrderItems($order['amazon_order_id']);
