@@ -90,7 +90,7 @@ class Order extends Api
                     $orderItemListResult['orderItemList'][$key]['order_id'] = $order['id'];
                 }
                 $this->orderItemModel->saveAll($orderItemListResult['orderItemList']);
-                $this->orderModel->where('id', $order['id'])->update(['has_items' => 1]);
+                $this->orderModel->save(['has_items' => 1],['id'=>$order['id']]);
             } else {
                 // TODO: 请求失败的处理
             }
@@ -245,7 +245,7 @@ class Order extends Api
             $deliver_status = $deliver_status . "_1";
         }
 
-        $this->orderModel->where('id', $order['id'])->update(['deliver_status' => $deliver_status]);
+        $this->orderModel->save(['deliver_status' => $deliver_status], ['id' => $order['id']]);
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
@@ -256,7 +256,7 @@ class Order extends Api
             $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
             if ($result && $result['code'] == 200) {
                 // 2.更新order的has_send_mail 字段
-                $this->orderModel->where('id', $order['id'])->update(['has_send_mail' => 1]);
+                $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
             } else {
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
