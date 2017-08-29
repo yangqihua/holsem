@@ -162,6 +162,10 @@ class Order extends Api
             $order = $this->orderModel->where("amazon_order_id", $package['amazonOrderId'])->find();
             // 如果已经存在该订单
             if ($order && $order['buyer_email'] && $order['order_status'] == 'Shipped') {
+                // 如果没有商品，则重新抓取一遍
+                if(!$this->orderItemModel->where('order_id',$order['id'])->find()){
+                    $this->listOrderItems($package['amazonOrderId']);
+                }
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
             } else { // 不存在则访问 aws api 获取订单详情 和 订单的商品
                 if ($order) {
