@@ -4,6 +4,7 @@ return [
     'Id'  =>  '主键id',
     'Amazon_order_id'  =>  '订单id',
     'Package_number'  =>  '快递单号码',
+    'Skus'  =>  '型号',
     'Ship_by'  =>  '快递公司',
     'Deliver_status'  =>  '快递状态(爬取次数)',
     'Buyer_email'  =>  '买家邮箱',

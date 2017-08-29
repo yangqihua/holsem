@@ -21,11 +21,6 @@ class Order extends Model
         'create_time_text',
         'update_time_text'
     ];
-    
-
-    
-
-
 
     public function getCreateTimeTextAttr($value, $data)
     {
@@ -49,6 +44,11 @@ class Order extends Model
     {
         return $value && !is_numeric($value) ? strtotime($value) : $value;
     }
+
+//    public function orderItems()
+//    {
+//        return $this->hasMany('\app\common\model\amazon\OrderItem')->field('seller_sku');
+//    }
 
 
 }

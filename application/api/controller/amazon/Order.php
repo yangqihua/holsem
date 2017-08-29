@@ -62,7 +62,7 @@ class Order extends Api
                     $order['has_items'] = 0;
                     $this->orderModel->data($order, true)->isUpdate(false)->save();
                     $this->listOrderItems($order['amazon_order_id']);
-                    sleep(8);
+                    sleep(5);
                 } else {
                     // 只有订单状态改变了才更新， 已经读了邮件了就不需要更新了，读邮件会更新到最新状态。
                     if ($order['order_status'] != $oldOrder['order_status'] && ($oldOrder['ship_by'] == null
@@ -70,7 +70,7 @@ class Order extends Api
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                         $this->listOrderItems($order['amazon_order_id']);
-                        sleep(8);
+                        sleep(5);
                     }
                 }
             }
