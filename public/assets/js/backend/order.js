@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         // {field: 'id', title: __('Id')},
                         {field: 'amazon_order_id', title: __('Amazon_order_id'), style: 'width:228px'},
                         {field: 'package_number', title: __('Package_number')},
-                        {field: 'skus', title: __('Skus'),formatter: Controller.api.formatter.skus},
+                        {field: 'skus', title: __('Skus'),formatter: Controller.api.formatter.skus, operate: false},
                         {field: 'ship_by', title: __('Ship_by'), formatter: Controller.api.formatter.shipBy},
                         // {field: 'has_items', title: __('Has_items'),visible: false},
                         {
