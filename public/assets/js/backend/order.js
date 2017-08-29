@@ -151,15 +151,16 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     return '<span class="label label-' + color + '">' + __(value) + '</span>';
                 },
                 skus: function (value, row, index) {
-                    var skus = value.split(',');
-                    var skuArr = [];
-                    $.each(skus, function (i, value) {
-                        arr = value.split('-');
-                        if(arr.length===2){
-                            skuArr.push(arr[1]);
-                        }
-                    });
-                    value = skuArr.join(',');
+                    // var skus = value.split(',');
+                    // var skuArr = [];
+                    // $.each(skus, function (i, value) {
+                    //     arr = value.split('-');
+                    //     if(arr.length===2){
+                    //         skuArr.push(arr[1]);
+                    //     }
+                    // });
+                    // value = skuArr.join(',');
+                    value = value.replace(/HOLSEM[-| ]/g,'');
                     return value;
                 },
                 shipBy: function (value, row, index) {
