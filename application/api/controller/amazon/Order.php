@@ -19,6 +19,8 @@ use SSilence\ImapClient\ImapClient as Imap;
 
 use app\admin\model\Config;
 
+use fast\Http;
+
 class Order extends Api
 {
     protected $orderModel = null;
@@ -38,9 +40,10 @@ class Order extends Api
         return json(['title' => '执行order测试', 'time' => date("Y-m-d H:i:s"), 'code' => 0]);
     }
 
-    public function getOrder()
+    public function sendRequest()
     {
-        return getOrder("114-3438471-2729820");
+        $res = Http::sendAsyncRequest('http://yangqihua.com/holsem/public/index.php/api/amazon/order/getPackageStatus', [], 'GET');
+        return $res;
     }
 
     public function listOrders()
@@ -75,7 +78,7 @@ class Order extends Api
                 }
             }
         } else {
-            // TODO: 请求失败的处理
+            trace('获取订单列表失败，原因： ' . $orderListResult['message'], 'error');
         }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrders', 'code' => $orderListResult['code'], 'message' => $orderListResult['message'], 'content' => '获取订单成功']);
     }
@@ -94,6 +97,7 @@ class Order extends Api
                 $this->orderModel->save(['has_items' => 1],['id'=>$order['id']]);
             } else {
                 // TODO: 请求失败的处理
+                trace('获取商品列表失败，原因： ' . $orderItemListResult['message'], 'error');
             }
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrderItems', 'code' => $orderItemListResult['code'], 'message' => $orderItemListResult['message'], 'content' => $orderItemListResult]);
         }
@@ -124,7 +128,9 @@ class Order extends Api
             $imap = new Imap($mailbox, $username, $password, $encryption);
 
         } catch (ImapClientException $error) {
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => $error->getMessage() . PHP_EOL, 'content' => $error->getMessage() . PHP_EOL]);
+            // TODO: 请求失败的处理
+            trace('连接邮件失败，原因： ' . $error->getMessage() . PHP_EOL, 'error');
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getMailList', 'code' => 500, 'message' => $error->getMessage(), 'content' => $error->getMessage()]);
         }
         $imap->selectFolder('FBA Shipments');
         $mailCount = $imap->countMessages();
@@ -250,7 +256,8 @@ class Order extends Api
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
-            $receiver_address = $order['buyer_email'];
+            $receiver_address = '904693433@qq.com';
+//            $receiver_address = $order['buyer_email'];
             $name = $order['buyer_name'];
             if($name){
                 $n = explode(' ',$name);
@@ -265,6 +272,7 @@ class Order extends Api
                 $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
             } else {
+                trace('发送邮件失败，原因： ' . $result['message'], 'error');
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
             }
         } else { // 只有在非 delivered的情况下才往后移动

@@ -44,47 +44,44 @@ class Autotask extends Controller
     {
         $time = time();
         $logDir = LOG_PATH . 'crontab/';
-        if (!is_dir($logDir))
-        {
+        if (!is_dir($logDir)) {
             mkdir($logDir);
         }
         //筛选未过期且未完成的任务
         $crontabList = Crontab::where('status', '=', 'normal')->order('weigh desc,id desc')->select();
 
-        $result = '执行时间<' . date("Y-m-d H:i:s").'> : ';
-        foreach ($crontabList as $crontab)
-        {
+        $result = '执行时间<' . date("Y-m-d H:i:s") . '> : ';
+        foreach ($crontabList as $crontab) {
             $update = [];
             $execute = FALSE;
-            if ($time < $crontab['begintime']){
+            if ($time < $crontab['begintime']) {
                 //任务未开始
                 continue;
             }
-            if ($crontab['maximums'] && $crontab['executes'] > $crontab['maximums']){
+            if ($crontab['maximums'] && $crontab['executes'] > $crontab['maximums']) {
                 //任务已超过最大执行次数
                 $update['status'] = 'completed';
-            }else if ($crontab['endtime'] > 0 && $time > $crontab['endtime']){
+            } else if ($crontab['endtime'] > 0 && $time > $crontab['endtime']) {
                 //任务已过期
                 $update['status'] = 'expired';
-            }else{
+            } else {
                 //重复执行
                 //如果未到执行时间则继续循环
-                if (!Date::cron($crontab['schedule'])){
+                if (!Date::cron($crontab['schedule'])) {
                     continue;
                 }
                 $execute = TRUE;
             }
 
             // 如果允许执行
-            if ($execute)
-            {
+            if ($execute) {
                 $update['executetime'] = $time;
                 $update['executes'] = $crontab['executes'] + 1;
                 $update['status'] = ($crontab['maximums'] > 0 && $update['executes'] >= $crontab['maximums']) ? 'completed' : 'normal';
             }
 
             // 如果不需要更新状态
-            if (!$update){
+            if (!$update) {
                 continue;
             }
             // 更新状态
@@ -93,44 +90,33 @@ class Autotask extends Controller
             // 将执行放在后面是为了避免超时导致多次执行
             if (!$execute)
                 continue;
-            try
-            {
-                if ($crontab['type'] == 'url')
-                {
-                    if (substr($crontab['content'], 0, 1) == "/")
-                    {
+            try {
+                if ($crontab['type'] == 'url') {
+                    if (substr($crontab['content'], 0, 1) == "/") {
                         // 本地项目URL
                         exec('nohup php ' . ROOT_PATH . 'public/index.php ' . $crontab['content'] . ' >> ' . $logDir . date("Y-m-d") . '.log 2>&1 &');
                         // 执行下面这个命令，仅仅是为了日志能够换行
-                        exec('nohup echo "" >> '. $logDir . date("Y-m-d") . '.log 2>&1 &');
-                    }
-                    else
-                    {
+                        exec('nohup echo "" >> ' . $logDir . date("Y-m-d") . '.log 2>&1 &');
+                    } else {
                         // 远程异步调用URL
-                        Http::sendAsyncRequest($crontab['content'],[],'GET');
+                        Http::sendAsyncRequest($crontab['content'], [], 'GET');
                     }
-                }
-                else if ($crontab['type'] == 'sql')
-                {
+                } else if ($crontab['type'] == 'sql') {
                     //这里需要强制重连数据库,使用已有的连接会报2014错误
                     $connect = Db::connect([], true);
                     $connect->execute("select 1");
                     // 执行SQL
                     $connect->getPdo()->exec($crontab['content']);
-                }
-                else if ($crontab['type'] == 'shell')
-                {
+                } else if ($crontab['type'] == 'shell') {
                     // 执行Shell
                     exec($crontab['content'] . ' >> ' . $logDir . date("Y-m-d") . '.log 2>&1 &');
                 }
-                $result .= '执行<'.$crontab['title'] . '>, 执行类型<' . $crontab['type'] . ">。";
-            }
-            catch (Exception $e)
-            {
-                Log::record($e->getMessage());
+                $result .= '执行<' . $crontab['title'] . '>, 执行类型<' . $crontab['type'] . ">。";
+            } catch (Exception $e) {
+                trace($e->getMessage(),'error');
             }
         }
-        return  $result . " 所有定时任务执行完成!\n";
+        return $result . " 所有定时任务执行完成!\n";
     }
 
 }
