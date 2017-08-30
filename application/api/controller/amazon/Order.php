@@ -269,6 +269,10 @@ class Order extends Api
                     $name = $n[0];
                 }
             }
+
+            if(!$this->orderItemModel->where('order_id', $order['id'])->find()){
+                $this->listOrderItems($order['amazon_order_id']);
+            }
             $orderCategoryList = $this->orderItemModel->where('order_id', $order['id'])->column('seller_sku');
             $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
             if ($result && $result['code'] == 200) {
