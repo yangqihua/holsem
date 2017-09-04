@@ -200,31 +200,38 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
         $holsems = [];
         foreach ($orderCategoryList as $key => $value) {
             $v = '';
-            if($value == 'HOLSEM-U3'){
+            if ($value == 'HOLSEM U3') {
                 $v = "\n    https://www.amazon.com/dp/B01LD06EQ4";
-            }else if($value == 'HOLSEM-X5'){
+            } else if ($value == 'HOLSEM-X5') {
                 $v = "\n    https://www.amazon.com/dp/B01EV3DW5Q";
-            }else if($value == 'HOLSEM-X5B'){
+            } else if ($value == 'HOLSEM-X5B') {
                 $v = "\n    https://www.amazon.com/dp/B01LXIDES4";
-            }else if($value == 'HOLSEM-X8'){
+            } else if ($value == 'HOLSEM-X8') {
                 $v = "\n    https://www.amazon.com/dp/B01ASWH5KW";
-            }else if($value == 'HOLSEM-X8B'){
+            } else if ($value == 'HOLSEM-X8B') {
                 $v = "\n    https://www.amazon.com/dp/B01LYHJMTD";
-            }else if($value == 'HOLSEM-X12' || $value == 'HOLSEM-S12'){
+            } else if ($value == 'HOLSEM-X12' || $value == 'HOLSEM-S12') {
                 $v = "\n    https://www.amazon.com/dp/B01H14SFRM";
-            }else if($value == 'HOLSEM-X12B'){
+            } else if ($value == 'HOLSEM-X12B') {
                 $v = "\n    https://www.amazon.com/dp/B01LYHEC16";
             }
             $holsems[] = $v;
         }
+        $unU3 = '';
+        foreach ($orderCategoryList as $key => $value) {
+            if ($value != 'HOLSEM U3') {
+                $unU3 = ' and our surge protector can help to manage your various charging needs both at home and in office';
+                break;
+            }
+        }
         $holsemString = join("", $holsems);
         $subject = config('mail_text.subject');
-        $message = sprintf(config('mail_text.content'), $name, $holsemString);
+        $message = sprintf(config('mail_text.content'), $name, $unU3, $holsemString);
         $email = new Email;
         $result = $email
             ->to($receiver_address)
             ->subject($subject)
-            ->message($message,false)
+            ->message($message, false)
             ->send();
         if ($result) {
             return ['code' => 200, 'message' => 'success'];

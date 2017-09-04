@@ -69,7 +69,8 @@ class Order extends Api
                 } else {
                     // 只有订单状态改变了才更新， 已经读了邮件了就不需要更新了，读邮件会更新到最新状态。
                     if ($order['order_status'] != $oldOrder['order_status'] && ($oldOrder['ship_by'] == null
-                        || $oldOrder['ship_by'] == '' || $oldOrder['ship_by'] == '未配送')) {
+                            || $oldOrder['ship_by'] == '' || $oldOrder['ship_by'] == '未配送')
+                    ) {
                         $order['has_items'] = 0;
                         $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
                         $this->listOrderItems($order['amazon_order_id']);
@@ -94,7 +95,7 @@ class Order extends Api
                     $orderItemListResult['orderItemList'][$key]['order_id'] = $order['id'];
                 }
                 $this->orderItemModel->saveAll($orderItemListResult['orderItemList']);
-                $this->orderModel->save(['has_items' => 1],['id'=>$order['id']]);
+                $this->orderModel->save(['has_items' => 1], ['id' => $order['id']]);
             } else {
                 // TODO: 请求失败的处理
                 trace('获取商品列表失败，原因： ' . $orderItemListResult['message'], 'error');
@@ -143,7 +144,6 @@ class Order extends Api
         $packages = [];
         foreach ($emails as $email) {
             $html = $email->message->text->jsonSerialize()['body'];
-//            $html = ' Fulfillment Order (114-9582930-8642631) to one of your customers: Shipped By: USPS Tracking No: 9361289692090542135037-----------';
             $package = [];
             $findCount = preg_match('/Fulfillment Order \(([^\)]*)\)*./', $html, $matches);
             if ($findCount && count($matches) == 2) {
@@ -163,7 +163,7 @@ class Order extends Api
             // 如果已经存在该订单
             if ($order && $order['buyer_email'] && $order['order_status'] == 'Shipped') {
                 // 如果没有商品，则重新抓取一遍
-                if(!$this->orderItemModel->where('order_id',$order['id'])->find()){
+                if (!$this->orderItemModel->where('order_id', $order['id'])->find()) {
                     $this->listOrderItems($package['amazonOrderId']);
                 }
                 $this->orderModel->save(['ship_by' => $package['shippedBy'], 'package_number' => $package['tracking']], ['id' => $order['id']]);
@@ -194,12 +194,13 @@ class Order extends Api
      */
     public function getPackageStatus()
     {
-        // $packageNumber = '1Z300VW20343361574';
-        // $packageNumber = '9361289683090216690666';
         $config = new Config();
         $order_usps_index = $config->where("name", "order_usps_index")->find();
+        $order_packages = "USPS,UPS";
         $order_usps_count = $this->orderModel
-            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")->where("package_number", "<>", "null")->where("ship_by", "USPS")
+            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
+            ->where("package_number", "<>", "null")
+            ->where(["ship_by"=>["in",$order_packages]])
             ->count();
         $config->save(['value' => $order_usps_count], ['name' => 'order_usps_count']);
         $usps_index = intval($order_usps_index['value']);
@@ -208,7 +209,9 @@ class Order extends Api
             $usps_index = 0;
         }
         $orders = $this->orderModel
-            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")->where("package_number", "<>", "null")->where("ship_by", "USPS")
+            ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
+            ->where("package_number", "<>", "null")
+            ->where(["ship_by"=>["in",$order_packages]])
             ->limit($usps_index, 1)
             ->select();
         $order = false;
@@ -219,7 +222,7 @@ class Order extends Api
         if (!$order) {
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
         }
-        $USPStracker = ShipmentTracker::get('USPS');
+        $USPStracker = ShipmentTracker::get($order['ship_by']);
         $track = $USPStracker->track($order['package_number']);
 
         $events = $track->events();
@@ -240,6 +243,7 @@ class Order extends Api
                     $flag = true;
                 }
             }
+            // 如果以前有存在了快递信息了，就不save了
             if (!$flag) {
                 $trackModel->data($data, true)->isUpdate(false)->save();
             }
@@ -255,7 +259,6 @@ class Order extends Api
         } else {
             $deliver_status = $deliver_status . "_1";
         }
-
         $this->orderModel->save(['deliver_status' => $deliver_status], ['id' => $order['id']]);
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
@@ -263,14 +266,14 @@ class Order extends Api
 //            $receiver_address = '904693433@qq.com';
             $receiver_address = $order['buyer_email'];
             $name = $order['buyer_name'];
-            if($name){
-                $n = explode(' ',$name);
-                if(count($n)>1){
+            if ($name) {
+                $n = explode(' ', $name);
+                if (count($n) > 1) {
                     $name = $n[0];
                 }
             }
 
-            if(!$this->orderItemModel->where('order_id', $order['id'])->find()){
+            if (!$this->orderItemModel->where('order_id', $order['id'])->find()) {
                 $this->listOrderItems($order['amazon_order_id']);
             }
             $orderCategoryList = $this->orderItemModel->where('order_id', $order['id'])->column('seller_sku');
@@ -280,16 +283,12 @@ class Order extends Api
                 $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
             } else {
-                trace('['.date("Y-m-d H:i:s").'] 发送邮件给 '.$order['buyer_email'].' 失败，原因： ' . $result['message'], 'error');
+                trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，原因： ' . $result['message'], 'error');
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
             }
         } else { // 只有在非 delivered的情况下才往后移动
             $config->update(['id' => $order_usps_index['id'], 'value' => ($usps_index + 1)]);
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
         }
-
-
     }
-
-
 }
