@@ -42,8 +42,14 @@ class Order extends Api
 
     public function sendRequest()
     {
-        $res = Http::sendAsyncRequest('http://yangqihua.com/holsem/public/index.php/api/amazon/order/getPackageStatus', [], 'GET');
-        return $res;
+        $res = getOrderItemList('111-4239815-8845815');
+        return json($res);
+    }
+
+    public function getItems()
+    {
+        $res = getOrderItemList('111-4239815-8845815');
+        return json($res);
     }
 
     public function listOrders()
@@ -72,7 +78,7 @@ class Order extends Api
                             || $oldOrder['ship_by'] == '' || $oldOrder['ship_by'] == '未配送')
                     ) {
                         $order['has_items'] = 0;
-                        $this->orderModel->save($order, ['amazon_order_id' => $order['amazon_order_id']]);
+                        $this->orderModel->save($order, ['id' => $order['id']]);
                         $this->listOrderItems($order['amazon_order_id']);
                         sleep(5);
                     }
@@ -103,7 +109,6 @@ class Order extends Api
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrderItems', 'code' => $orderItemListResult['code'], 'message' => $orderItemListResult['message'], 'content' => $orderItemListResult]);
         }
         return json(['time' => date("Y-m-d H:i:s"), 'title' => 'listOrderItems', 'code' => 200, 'message' => '暂无需要抓取的商品', 'content' => '暂无需要抓取的商品']);
-
     }
 
     /*
