@@ -288,7 +288,7 @@ class Order extends Api
                 $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
             } else {
-                trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，原因： ' . $result['message'], 'error');
+                trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： ' . $result['message'], 'error');
                 return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
             }
         } else { // 只有在非 delivered的情况下才往后移动
