@@ -225,6 +225,11 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
             }
         }
         $holsemString = join("", $holsems);
+
+        if($holsemString==''){
+            return ['code' => 500, 'message' => '不能匹配商品列表，不发送邮件给 '.$receiver_address];
+        }
+
         $subject = config('mail_text.subject');
         $message = sprintf(config('mail_text.content'), $name, $unU3, $holsemString);
         $email = new Email;

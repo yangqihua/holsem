@@ -205,7 +205,7 @@ class Order extends Api
         $order_usps_count = $this->orderModel
             ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
             ->where("package_number", "<>", "null")
-            ->where(["ship_by"=>["in",$order_packages]])
+            ->where(["ship_by" => ["in", $order_packages]])
             ->count();
         $config->save(['value' => $order_usps_count], ['name' => 'order_usps_count']);
         $usps_index = intval($order_usps_index['value']);
@@ -216,7 +216,7 @@ class Order extends Api
         $orders = $this->orderModel
             ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
             ->where("package_number", "<>", "null")
-            ->where(["ship_by"=>["in",$order_packages]])
+            ->where(["ship_by" => ["in", $order_packages]])
             ->limit($usps_index, 1)
             ->select();
         $order = false;
