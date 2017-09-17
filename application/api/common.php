@@ -214,6 +214,20 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 $v = "\n    https://www.amazon.com/dp/B01H14SFRM";
             } else if ($value == 'HOLSEM-X12B') {
                 $v = "\n    https://www.amazon.com/dp/B01LYHEC16";
+            } else if ($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'){  // 刀的求好评邮件
+                $subject = config('mail_text.subject');
+                $message = sprintf(config('mail_text.knife_content'), $name);
+                $email = new Email;
+                $result = $email
+                    ->to($receiver_address)
+                    ->subject($subject)
+                    ->message($message, false)
+                    ->send();
+                if ($result) {
+                    return ['code' => 200, 'message' => 'success'];
+                } else {
+                    return ['code' => 500, 'message' => $email->getError()];
+                }
             }
             $holsems[] = $v;
         }
