@@ -214,7 +214,7 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 $v = "\n    https://www.amazon.com/dp/B01H14SFRM";
             } else if ($value == 'HOLSEM-X12B') {
                 $v = "\n    https://www.amazon.com/dp/B01LYHEC16";
-            } else if ($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'){  // 刀的求好评邮件
+            }else if ($value == 'HOLSEM-D7'){  // 刀的求好评邮件 todo:有没有既有刀又有其他商品的订单
                 $subject = config('mail_text.subject');
                 $message = sprintf(config('mail_text.knife_content'), $name);
                 $email = new Email;
@@ -228,6 +228,9 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 } else {
                     return ['code' => 500, 'message' => $email->getError()];
                 }
+            }else if($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'){
+                // todo: 发送炸锅的邮件
+
             }
             $holsems[] = $v;
         }
