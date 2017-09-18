@@ -230,7 +230,25 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 }
             }else if($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'){
                 // todo: 发送炸锅的邮件
-
+                $a_link = '';
+                if($value == 'HOLSEM-A1'){
+                    $a_link = "\n    https://www.amazon.com/dp/B072JJBZ37";
+                }else{
+                    $a_link = "\n    https://www.amazon.com/dp/B071W83YND";
+                }
+                $subject = config('mail_text.subject');
+                $message = sprintf(config('mail_text.zg_content'), $name,$a_link);
+                $email = new Email;
+                $result = $email
+                    ->to($receiver_address)
+                    ->subject($subject)
+                    ->message($message, false)
+                    ->send();
+                if ($result) {
+                    return ['code' => 200, 'message' => 'success'];
+                } else {
+                    return ['code' => 500, 'message' => $email->getError()];
+                }
             }
             $holsems[] = $v;
         }
