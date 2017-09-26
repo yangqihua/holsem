@@ -26,7 +26,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                         if (!total.hasOwnProperty(j)) {
                             total[j] = 0;
                         }
-                        total[j] += data[i][j];
+                        total[j] += parseInt(data[i][j]);
                         if(j===1){
                         // console.log("total["+j+"]: ", total[j], "data["+i+"]["+j+"]", data[i][j]);
                         }
@@ -34,7 +34,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                 }
                 var lineItem = {name: '总数', type: 'line', data: total};
                 series.push(lineItem);
-                console.log("date:", date);
+                console.log("series:", series);
                 // console.log("data:", data);
                 return {date: date, keys: keys, series: series};
             }();
