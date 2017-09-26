@@ -130,17 +130,17 @@
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade active in" id="one">
                 <div class="row">
-                    <!--{volist name="totalOrderItem" id="item"}-->
-                        <!--<div class="col-sm-3 col-xs-6">-->
-                            <!--<div class="sm-st clearfix">-->
-                                <!--<span class="sm-st-icon {$item.bgClass}">{$item.sku}</span>-->
-                                <!--<div class="sm-st-info">-->
-                                    <!--<span>{$item.num}</span>-->
-                                    <!--订单总数-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--{/volist}-->
+                    {volist name="totalOrderItem" id="item"}
+                        <div class="col-sm-3 col-xs-6">
+                            <div class="sm-st clearfix">
+                                <span class="sm-st-icon {$item.bgClass}">{$item.sku}</span>
+                                <div class="sm-st-info">
+                                    <span>{$item.num}</span>
+                                    订单总数
+                                </div>
+                            </div>
+                        </div>
+                    {/volist}
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -152,4 +152,9 @@
     </div>
 </div>
 <script>
+    var orderItems = {
+            date: {:json_encode($date)},
+            keys: {:json_encode($keys)},
+            data: {:json_encode($data)},
+    };
 </script>
