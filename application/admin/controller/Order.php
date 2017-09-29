@@ -18,6 +18,7 @@ use think\db;
 class Order extends Backend
 {
 
+    protected $noNeedLogin = ['listorders'];
     /**
      * Order模型对象
      */
@@ -28,6 +29,37 @@ class Order extends Backend
         parent::_initialize();
         $this->model = model('Order');
 
+    }
+
+    public function listOrders(){
+        $result = $this->getOrders();
+        return json($result);
+    }
+
+
+    public function getOrders(){
+        list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+        $total = $this->model
+            ->where($where)
+            ->order($sort, $order)
+            ->count();
+
+        $list = $this->model
+            ->where($where)
+            ->order($sort, $order)
+            ->limit($offset, $limit)
+            ->select();
+
+
+        $itemModel = new ItemModel();
+        foreach ($list as $key => $value) {
+            $items = $itemModel->where('order_id', $value['id'])->column('seller_sku');
+            $skus = implode(',',$items);
+            $list[$key]['skus'] = $skus;
+        }
+
+        $result = array("total" => $total, "rows" => $list);
+        return $result;
     }
 
     /**
@@ -42,28 +74,7 @@ class Order extends Backend
             if ($this->request->request('pkey_name')) {
                 return $this->selectpage();
             }
-            list($where, $sort, $order, $offset, $limit) = $this->buildparams();
-            $total = $this->model
-                ->where($where)
-                ->order($sort, $order)
-                ->count();
-
-            $list = $this->model
-                ->where($where)
-                ->order($sort, $order)
-                ->limit($offset, $limit)
-                ->select();
-
-
-            $itemModel = new ItemModel();
-            foreach ($list as $key => $value) {
-                $items = $itemModel->where('order_id', $value['id'])->column('seller_sku');
-                $skus = implode(',',$items);
-                $list[$key]['skus'] = $skus;
-            }
-
-            $result = array("total" => $total, "rows" => $list);
-
+            $result = $this->getOrders();
             return json($result);
         }
         return $this->view->fetch();
