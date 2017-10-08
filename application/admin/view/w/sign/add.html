@@ -1,0 +1,22 @@
+<form id="add-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label for="s-upload" class="control-label col-xs-12 col-sm-2">{:__('Upload')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input type="text" name="row[local]" id="s-upload" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="s-upload" class="control-label col-xs-12 col-sm-2">上传门禁记录</label>
+        <div class="col-xs-12 col-sm-8">
+            <button id="sign-local" class="btn btn-primary plupload" data-input-id="s-upload" data-url="{:url('/admin/w/sign/upload')}"><i class="fa fa-upload"></i> {:__("Upload to local")}</button>
+        </div>
+    </div>
+
+    <div class="form-group hidden layer-footer">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-12 col-sm-8">
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

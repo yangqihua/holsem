@@ -34,7 +34,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                 }
                 var lineItem = {name: '总数', type: 'line', data: total};
                 series.push(lineItem);
-                console.log("series:", series);
+                // console.log("series:", series);
                 // console.log("data:", data);
                 return {date: date, keys: keys, series: series};
             }();

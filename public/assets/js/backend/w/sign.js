@@ -38,6 +38,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             // 为表格绑定事件
             Table.api.bindevent(table);
+
+            // 快递按钮事件
+            $(document).on("click", ".btn-upload", function (e) {
+                e.preventDefault();
+                Fast.api.open('w/sign/add', "上传门禁记录");
+            });
         },
         add: function () {
             Controller.api.bindevent();
