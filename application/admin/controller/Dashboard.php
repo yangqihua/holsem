@@ -36,7 +36,7 @@ class Dashboard extends Backend
             $totalOrderItem[$i]['sku'] = preg_replace('/HOLSEM[-| ]/', '', $totalOrderItem[$i]['sku']);
         }
 
-        $firstDay = strtotime(date('Y-m-d',strtotime("-2 month")));
+        $firstDay = strtotime(date('Y-m-d',strtotime("-1 month")));
         $sql = 'SELECT from_unixtime(create_time,\'%m月%d日\') createTime,seller_sku,count(*) num from fastadmin.order_item 
 WHERE create_time>:firstDay group by createTime,seller_sku;';
         $orderItems = Db::query($sql,['firstDay'=>$firstDay]);
