@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function ($, undefined, Backend, Table, Form, Upload) {
 
     var Controller = {
         index: function () {
@@ -31,7 +31,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'end_time', title: __('End_time')},
                         {field: 'create_time', title: __('Create_time'), formatter: Table.api.formatter.datetime},
                         {field: 'update_time', title: __('Update_time'), formatter: Table.api.formatter.datetime},
-                        {field: 'operate', title: __('Operate'), events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {
+                            field: 'operate',
+                            title: __('Operate'),
+                            events: Table.api.events.operate,
+                            formatter: Table.api.formatter.operate
+                        }
                     ]
                 ]
             });
@@ -44,6 +49,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 e.preventDefault();
                 Fast.api.open('w/sign/add', "上传门禁记录");
             });
+
+            // Upload.api.custom.changetable = function (response) {
+            //     console.log('response', response);
+            //     // var data = response.data.data;
+            //     // var content = '';
+            //     // for(var i=0;i<data.length;i++){
+            //     //     content+='<tr><td>'+data.name+'</td><td>'+data.date+'</td><td>'+data.start_time+'</td><td>'+data.end_time+'</td></tr>'
+            //     // }
+            //     // console.log('content',content);
+            //     // $('.table > tbody').html(content);
+            // };
         },
         add: function () {
             Controller.api.bindevent();
