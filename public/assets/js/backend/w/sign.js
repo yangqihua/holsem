@@ -32,6 +32,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {
                             field: 'sign_date',
                             title: __('Sign_date'),
+                            sortable: true,
                             operate: 'BETWEEN',
                             type: 'datetime',
                             addclass: 'datetimepicker',

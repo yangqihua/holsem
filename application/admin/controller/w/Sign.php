@@ -55,6 +55,7 @@ class Sign extends Backend
 
             foreach ($list as $key=>$value){
                 $list[$key]['w_name'] = $value->wUser->w_name?$value->wUser->w_name:"无姓名";
+                $list[$key]['sign_date'] = date("Y-m-d",$list[$key]['sign_date']);
             }
 
             $result = array("total" => $total, "rows" => $list);
@@ -110,7 +111,7 @@ class Sign extends Backend
                 $status .= " 早退";
             }
             $status = $status==""?"正常":$status;
-            $data[] = ['name'=>$name,'worker_id'=>$worker_id,'sign_date'=>$date,
+            $data[] = ['name'=>$name,'worker_id'=>$worker_id,'sign_date'=>strtotime($date),
                 'start_time'=>$start_time,'end_time'=>$end_time,'status'=>$status,'create_time'=>time(),'update_time'=>time()];
         }
         if ($fileInfo['error']) {
@@ -121,6 +122,9 @@ class Sign extends Backend
         $signModel = new WSign();
         $signModel->allowField(true)->saveAll($data);
 
+        foreach ($data as $key=>$value){
+            $data[$key]['sign_date'] = date("Y-m-d",$data[$key]['sign_date']);
+        }
         $data = [
             'data' => $data
         ];
