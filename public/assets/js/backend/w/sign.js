@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function ($, undefined, Backend, Table, Form, Upload) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
 
     var Controller = {
         index: function () {
@@ -49,17 +49,6 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'upload'], function (
                 e.preventDefault();
                 Fast.api.open('w/sign/add', "上传门禁记录");
             });
-
-            // Upload.api.custom.changetable = function (response) {
-            //     console.log('response', response);
-            //     // var data = response.data.data;
-            //     // var content = '';
-            //     // for(var i=0;i<data.length;i++){
-            //     //     content+='<tr><td>'+data.name+'</td><td>'+data.date+'</td><td>'+data.start_time+'</td><td>'+data.end_time+'</td></tr>'
-            //     // }
-            //     // console.log('content',content);
-            //     // $('.table > tbody').html(content);
-            // };
         },
         add: function () {
             Controller.api.bindevent();

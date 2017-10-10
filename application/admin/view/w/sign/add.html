@@ -1,4 +1,3 @@
-<!--<div style="position: relative;top:-15px;">-->
 <form id="add-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST" action="" style="position: relative;top:-15px;">
         <div class="col-sm-12">
             <button id="sign-upload" class="btn btn-primary plupload" data-after-upload="changetable" data-url="{:url('/admin/w/sign/upload')}"><i class="fa fa-upload"></i> 选择文件</button>
@@ -26,7 +25,8 @@
     <div class="form-group hidden layer-footer">
         <div class="col-xs-2"></div>
         <div class="col-xs-12 col-sm-8">
-            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+            <button type="reset" class="btn btn-primary btn-embossed btn-close" onclick="Layer.closeAll();">{:__('Close')}</button>
         </div>
     </div>
+
 </form>
