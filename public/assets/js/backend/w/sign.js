@@ -25,14 +25,43 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         // {field: 'id', title: __('Id')},
-                        {field: 'w_name', title: "姓名",operate: false},
+                        {
+                            field: 'w_name', title: "姓名", operate: false
+                        },
                         {field: 'worker_id', title: __('Worker_id')},
-                        {field: 'sign_date', title: __('Sign_date')},
-                        {field: 'start_time', title: __('Start_time')},
-                        {field: 'end_time', title: __('End_time')},
-                        {field: 'status', title: "状态"},
-                        {field: 'create_time', title: __('Create_time'), formatter: Table.api.formatter.datetime,operate: false},
-                        {field: 'update_time', title: __('Update_time'), formatter: Table.api.formatter.datetime,visible: false,operate: false},
+                        {
+                            field: 'sign_date',
+                            title: __('Sign_date'),
+                            operate: 'BETWEEN',
+                            type: 'datetime',
+                            addclass: 'datetimepicker',
+                            data: 'data-date-format="YYYY-MM-DD"'
+                        },
+                        {
+                            field: 'start_time', title: __('Start_time'), operate: 'LIKE %...%',
+                            placeholder: '模糊搜索，*表示任意字符',
+                        },
+                        {
+                            field: 'end_time', title: __('End_time'), operate: 'LIKE %...%',
+                            placeholder: '模糊搜索，*表示任意字符',
+                        },
+                        {
+                            field: 'status', title: "状态", operate: 'LIKE %...%',
+                            placeholder: '模糊搜索，*表示任意字符',
+                        },
+                        {
+                            field: 'create_time',
+                            title: __('Create_time'),
+                            formatter: Table.api.formatter.datetime,
+                            operate: false
+                        },
+                        {
+                            field: 'update_time',
+                            title: __('Update_time'),
+                            formatter: Table.api.formatter.datetime,
+                            visible: false,
+                            operate: false
+                        },
                         // {
                         //     field: 'operate',
                         //     title: __('Operate'),
