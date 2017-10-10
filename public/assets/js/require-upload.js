@@ -210,11 +210,11 @@ define(['jquery', 'bootstrap', 'plupload', 'template'], function ($, undefined, 
                         alert("Custom Callback,Response URL:" + response.url);
                     },
                     changetable: function (response) {
-                        // console.log('response', response);
+                        parent.$(".btn-refresh").trigger("click");
                         var data = response.data;
                         var content = '';
                         for(var i=0;i<data.length;i++){
-                            content+='<tr><td>'+data[i].name+'</td><td>'+data[i].worker_id+'</td><td>'+data[i].date+'</td><td>'+data[i].start_time+'</td><td>'+data[i].end_time+'</td><td>'+data[i].status+'</td></tr>'
+                            content+='<tr><td>'+data[i].name+'</td><td>'+data[i].worker_id+'</td><td>'+data[i].sign_date+'</td><td>'+data[i].start_time+'</td><td>'+data[i].end_time+'</td><td>'+data[i].status+'</td></tr>'
                         }
                         $('.table > tbody').html(content);
                     },

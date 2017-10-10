@@ -21,8 +21,11 @@ class WSign extends Model
         'create_time_text',
         'update_time_text'
     ];
-    
 
+    public function wUser()
+    {
+        return $this->hasOne('WUser','worker_id','worker_id','left');
+    }
     
 
 

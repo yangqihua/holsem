@@ -24,19 +24,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        // {field: 'id', title: __('Id')},
+                        {field: 'w_name', title: "姓名"},
                         {field: 'worker_id', title: __('Worker_id')},
                         {field: 'sign_date', title: __('Sign_date')},
                         {field: 'start_time', title: __('Start_time')},
                         {field: 'end_time', title: __('End_time')},
+                        {field: 'status', title: "状态"},
                         {field: 'create_time', title: __('Create_time'), formatter: Table.api.formatter.datetime},
-                        {field: 'update_time', title: __('Update_time'), formatter: Table.api.formatter.datetime},
-                        {
-                            field: 'operate',
-                            title: __('Operate'),
-                            events: Table.api.events.operate,
-                            formatter: Table.api.formatter.operate
-                        }
+                        {field: 'update_time', title: __('Update_time'), formatter: Table.api.formatter.datetime,visible: false},
+                        // {
+                        //     field: 'operate',
+                        //     title: __('Operate'),
+                        //     events: Table.api.events.operate,
+                        //     formatter: Table.api.formatter.operate
+                        // }
                     ]
                 ]
             });

@@ -4,6 +4,7 @@ namespace app\admin\controller\w;
 
 use app\common\controller\Backend;
 use think\Db;
+use app\admin\model\WSign;
 
 use think\Controller;
 use think\Request;
@@ -26,6 +27,40 @@ class Sign extends Backend
         parent::_initialize();
         $this->model = model('WSign');
 
+    }
+
+    /**
+     * 查看 Sign
+     */
+    public function index()
+    {
+        //设置过滤方法
+        $this->request->filter(['strip_tags']);
+        if ($this->request->isAjax()) {
+            //如果发送的来源是Selectpage，则转发到Selectpage
+            if ($this->request->request('pkey_name')) {
+                return $this->selectpage();
+            }
+            list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+            $total = $this->model
+                ->where($where)
+                ->order($sort, $order)
+                ->count();
+
+            $list = $this->model
+                ->where($where)
+                ->order($sort, $order)
+                ->limit($offset, $limit)
+                ->select();
+
+            foreach ($list as $key=>$value){
+                $list[$key]['w_name'] = $value->wUser->w_name?$value->wUser->w_name:"无姓名";
+            }
+
+            $result = array("total" => $total, "rows" => $list);
+            return json($result);
+        }
+        return $this->view->fetch();
     }
 
 
@@ -75,12 +110,16 @@ class Sign extends Backend
                 $status .= " 早退";
             }
             $status = $status==""?"正常":$status;
-            $data[] = ['name'=>$name,'worker_id'=>$worker_id,'date'=>$date,'start_time'=>$start_time,'end_time'=>$end_time,'status'=>$status];
+            $data[] = ['name'=>$name,'worker_id'=>$worker_id,'sign_date'=>$date,
+                'start_time'=>$start_time,'end_time'=>$end_time,'status'=>$status,'create_time'=>time(),'update_time'=>time()];
         }
         if ($fileInfo['error']) {
             $this->msg = $file->getError();
             return;
         }
+
+        $signModel = new WSign();
+        $signModel->allowField(true)->saveAll($data);
 
         $data = [
             'data' => $data
