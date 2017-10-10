@@ -23,7 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'id',
                 columns: [
                     [
-                        {checkbox: true},
+                        // {checkbox: true},
                         // {field: 'id', title: __('Id')},
                         {
                             field: 'w_name', title: "姓名", operate: false
