@@ -54,7 +54,11 @@ class Sign extends Backend
                 ->select();
 
             foreach ($list as $key=>$value){
-                $list[$key]['w_name'] = $value->wUser->w_name?$value->wUser->w_name:"无姓名";
+                if($value->wUser && $value->wUser->w_name){
+                    $list[$key]['w_name'] = $value->wUser->w_name;
+                }else{
+                    $list[$key]['w_name'] = "无姓名";
+                }
                 $list[$key]['sign_date'] = date("Y-m-d",$list[$key]['sign_date']);
             }
 
@@ -99,6 +103,7 @@ class Sign extends Backend
         foreach ($signs as $key=>$value){
             $arr = explode("_",$key);
             $name = Db::table('w_user')->where("worker_id",$arr[0])->value('w_name');
+            $name = $name?$name:"无姓名";
             $worker_id = $arr[0];
             $date = $arr[1];
             $start_time = $value['start_time'];
