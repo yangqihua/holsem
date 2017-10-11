@@ -53,13 +53,13 @@ class Sign extends Backend
                 ->limit($offset, $limit)
                 ->select();
 
-            foreach ($list as $key=>$value){
-                if($value->wUser && $value->wUser->w_name){
+            foreach ($list as $key => $value) {
+                if ($value->wUser && $value->wUser->w_name) {
                     $list[$key]['w_name'] = $value->wUser->w_name;
-                }else{
+                } else {
                     $list[$key]['w_name'] = "无姓名";
                 }
-                $list[$key]['sign_date'] = date("Y-m-d",$list[$key]['sign_date']);
+                $list[$key]['sign_date'] = date("Y-m-d", $list[$key]['sign_date']);
             }
 
             $result = array("total" => $total, "rows" => $list);
@@ -90,34 +90,34 @@ class Sign extends Backend
                     $signs[$workIdAndDate] = ['start_time' => $column[2], 'end_time' => $column[2]];
                 } else {
                     $time = $signs[$workIdAndDate];
-                    if (strtotime(date("2017-10-10 ".$time['start_time'])) - strtotime(date("2017-10-10 ".$column[2]))>0) {
+                    if (strtotime(date("2017-10-10 " . $time['start_time'])) - strtotime(date("2017-10-10 " . $column[2])) > 0) {
                         $signs[$workIdAndDate]['start_time'] = $column[2];
                     }
-                    if (strtotime(date("2017-10-10 ".$time['end_time'])) - strtotime(date("2017-10-10 ".$column[2]))<0) {
+                    if (strtotime(date("2017-10-10 " . $time['end_time'])) - strtotime(date("2017-10-10 " . $column[2])) < 0) {
                         $signs[$workIdAndDate]['end_time'] = $column[2];
                     }
                 }
             }
         }
         $data = [];
-        foreach ($signs as $key=>$value){
-            $arr = explode("_",$key);
-            $name = Db::table('w_user')->where("worker_id",$arr[0])->value('w_name');
-            $name = $name?$name:"无姓名";
+        foreach ($signs as $key => $value) {
+            $arr = explode("_", $key);
+            $name = Db::table('w_user')->where("worker_id", $arr[0])->value('w_name');
+            $name = $name ? $name : "无姓名";
             $worker_id = $arr[0];
             $date = $arr[1];
             $start_time = $value['start_time'];
             $end_time = $value['end_time'];
             $status = "";
-            if(strtotime(date($date." ".$start_time))>strtotime(date($date." 09:00:00"))){
+            if (strtotime(date($date . " " . $start_time)) > strtotime(date($date . " 09:00:00"))) {
                 $status = "迟到";
             }
-            if(strtotime(date($date." ".$end_time))<strtotime(date($date." 18:30:00"))){
+            if (strtotime(date($date . " " . $end_time)) < strtotime(date($date . " 18:30:00"))) {
                 $status .= " 早退";
             }
-            $status = $status==""?"正常":$status;
-            $data[] = ['name'=>$name,'worker_id'=>$worker_id,'sign_date'=>strtotime($date),
-                'start_time'=>$start_time,'end_time'=>$end_time,'status'=>$status,'create_time'=>time(),'update_time'=>time()];
+            $status = $status == "" ? "正常" : $status;
+            $data[] = ['name' => $name, 'worker_id' => $worker_id, 'sign_date' => strtotime($date),
+                'start_time' => $start_time, 'end_time' => $end_time, 'status' => $status, 'create_time' => time(), 'update_time' => time()];
         }
         if ($fileInfo['error']) {
             $this->msg = $file->getError();
@@ -125,10 +125,12 @@ class Sign extends Backend
         }
 
         $signModel = new WSign();
+        foreach ($data as $key => $value) {
+            $signModel->where(['worker_id' => $value['worker_id'], 'sign_date' => $value['sign_date']])->delete();
+        }
         $signModel->allowField(true)->saveAll($data);
-
-        foreach ($data as $key=>$value){
-            $data[$key]['sign_date'] = date("Y-m-d",$data[$key]['sign_date']);
+        foreach ($data as $key => $value) {
+            $data[$key]['sign_date'] = date("Y-m-d", $data[$key]['sign_date']);
         }
         $data = [
             'data' => $data
