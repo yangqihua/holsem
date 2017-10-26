@@ -17,36 +17,34 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_InventorySupplyDetail
+ * InventoryModel_InventorySupplyDetail
  * 
  * Properties:
  * <ul>
  * 
  * <li>Quantity: int</li>
  * <li>SupplyType: string</li>
- * <li>EarliestAvailableToPick: FBAInventoryServiceMWS_Model_Timepoint</li>
- * <li>LatestAvailableToPick: FBAInventoryServiceMWS_Model_Timepoint</li>
+ * <li>EarliestAvailableToPick: Timepoint</li>
+ * <li>LatestAvailableToPick: Timepoint</li>
  *
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_InventorySupplyDetail extends FBAInventoryServiceMWS_Model {
+ class InventorySupplyDetail extends InventoryModel {
 
     public function __construct($data = null)
     {
     $this->_fields = array (
     'Quantity' => array('FieldValue' => null, 'FieldType' => 'int'),
     'SupplyType' => array('FieldValue' => null, 'FieldType' => 'string'),
-    'EarliestAvailableToPick' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_Timepoint'),
-    'LatestAvailableToPick' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_Timepoint'),
+    'EarliestAvailableToPick' => array('FieldValue' => null, 'FieldType' => 'Timepoint'),
+    'LatestAvailableToPick' => array('FieldValue' => null, 'FieldType' => 'Timepoint'),
     );
     parent::__construct($data);
     }
@@ -156,7 +154,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the EarliestAvailableToPick property.
      *
-     * @param FBAInventoryServiceMWS_Model_Timepoint earliestAvailableToPick
+     * @param Timepoint earliestAvailableToPick
      * @return this instance
      */
     public function setEarliestAvailableToPick($value)
@@ -202,7 +200,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the LatestAvailableToPick property.
      *
-     * @param FBAInventoryServiceMWS_Model_Timepoint latestAvailableToPick
+     * @param Timepoint latestAvailableToPick
      * @return this instance
      */
     public function setLatestAvailableToPick($value)

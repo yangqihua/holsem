@@ -50,7 +50,7 @@ require_once('.config.inc.php');
    'MaxErrorRetry' => 3,
  );
 
- $service = new FBAInventoryServiceMWS_Client(
+ $service = new InventoryClient(
                    AWS_ACCESS_KEY_ID,
                    AWS_SECRET_ACCESS_KEY,
                    $config,
@@ -73,8 +73,8 @@ require_once('.config.inc.php');
  * Setup request parameters and uncomment invoke to try out
  * sample for Get Service Status Action
  ***********************************************************************/
- // @TODO: set request. Action can be passed as FBAInventoryServiceMWS_Model_GetServiceStatus
- $request = new FBAInventoryServiceMWS_Model_GetServiceStatusRequest();
+ // @TODO: set request. Action can be passed as InventoryModel_GetServiceStatus
+ $request = new GetServiceStatusRequest();
  $request->setSellerId(MERCHANT_ID);
  // object or array of parameters
  invokeGetServiceStatus($service, $request);
@@ -85,7 +85,7 @@ require_once('.config.inc.php');
   * the MarketplaceId and ASIN.
   *
   * @param FBAInventoryServiceMWS_Interface $service instance of FBAInventoryServiceMWS_Interface
-  * @param mixed $request FBAInventoryServiceMWS_Model_GetServiceStatus or array of parameters
+  * @param mixed $request InventoryModel_GetServiceStatus or array of parameters
   */
 
   function invokeGetServiceStatus(FBAInventoryServiceMWS_Interface $service, $request)
@@ -103,7 +103,7 @@ require_once('.config.inc.php');
         echo $dom->saveXML();
         echo("ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
 
-     } catch (FBAInventoryServiceMWS_Exception $ex) {
+     } catch (InventoryException $ex) {
         echo("Caught Exception: " . $ex->getMessage() . "\n");
         echo("Response Status Code: " . $ex->getStatusCode() . "\n");
         echo("Error Code: " . $ex->getErrorCode() . "\n");

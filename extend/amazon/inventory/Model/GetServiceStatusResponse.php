@@ -17,34 +17,34 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
+namespace amazon\inventory\model;
+
+use amazon\inventory\InventoryModel;
+use DOMDocument;
+use DOMXPath;
+use Exception;
+
 /**
- *  @see FBAInventoryServiceMWS_Model
- */
-
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
-
-
-/**
- * FBAInventoryServiceMWS_Model_GetServiceStatusResponse
+ * GetServiceStatusResponse
  * 
  * Properties:
  * <ul>
  * 
- * <li>GetServiceStatusResult: FBAInventoryServiceMWS_Model_GetServiceStatusResult</li>
- * <li>ResponseMetadata: FBAInventoryServiceMWS_Model_ResponseMetadata</li>
- * <li>ResponseHeaderMetadata: FBAInventoryServiceMWS_Model_ResponseHeaderMetadata</li>
+ * <li>GetServiceStatusResult: InventoryModel_GetServiceStatusResult</li>
+ * <li>ResponseMetadata: ResponseMetadata</li>
+ * <li>ResponseHeaderMetadata: ResponseHeaderMetadata</li>
  *
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_GetServiceStatusResponse extends FBAInventoryServiceMWS_Model {
+ class GetServiceStatusResponse extends InventoryModel {
 
     public function __construct($data = null)
     {
     $this->_fields = array (
-    'GetServiceStatusResult' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_GetServiceStatusResult'),
-    'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_ResponseMetadata'),
-    'ResponseHeaderMetadata' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_ResponseHeaderMetadata'),
+    'GetServiceStatusResult' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_GetServiceStatusResult'),
+    'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'ResponseMetadata'),
+    'ResponseHeaderMetadata' => array('FieldValue' => null, 'FieldType' => 'ResponseHeaderMetadata'),
     );
     parent::__construct($data);
     }
@@ -62,7 +62,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the GetServiceStatusResult property.
      *
-     * @param FBAInventoryServiceMWS_Model_GetServiceStatusResult getServiceStatusResult
+     * @param InventoryModel_GetServiceStatusResult getServiceStatusResult
      * @return this instance
      */
     public function setGetServiceStatusResult($value)
@@ -108,7 +108,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the ResponseMetadata property.
      *
-     * @param FBAInventoryServiceMWS_Model_ResponseMetadata responseMetadata
+     * @param ResponseMetadata responseMetadata
      * @return this instance
      */
     public function setResponseMetadata($value)
@@ -154,7 +154,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the ResponseHeaderMetadata property.
      *
-     * @param FBAInventoryServiceMWS_Model_ResponseHeaderMetadata responseHeaderMetadata
+     * @param ResponseHeaderMetadata responseHeaderMetadata
      * @return this instance
      */
     public function setResponseHeaderMetadata($value)
@@ -187,12 +187,12 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
         return $this;
     }
     /**
-     * Construct FBAInventoryServiceMWS_Model_GetServiceStatusResponse from XML string
+     * Construct GetServiceStatusResponse from XML string
      * 
      * @param $xml
      *        XML string to construct from
      *
-     * @return FBAInventoryServiceMWS_Model_GetServiceStatusResponse 
+     * @return GetServiceStatusResponse
      */
     public static function fromXML($xml)
     {
@@ -201,9 +201,9 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
         $xpath = new DOMXPath($dom);
         $response = $xpath->query("//*[local-name()='GetServiceStatusResponse']");
         if ($response->length == 1) {
-            return new FBAInventoryServiceMWS_Model_GetServiceStatusResponse(($response->item(0))); 
+            return new GetServiceStatusResponse(($response->item(0)));
         } else {
-            throw new Exception ("Unable to construct FBAInventoryServiceMWS_Model_GetServiceStatusResponse from provided XML. 
+            throw new Exception ("Unable to construct GetServiceStatusResponse from provided XML. 
                                   Make sure that GetServiceStatusResponse is a root element");
         }
     }

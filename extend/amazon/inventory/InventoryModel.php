@@ -18,7 +18,7 @@
  */
 
 /**
- * FBAInventoryServiceMWS_Model - base class for all model classes
+ * InventoryModel - base class for all model classes
  */
 namespace amazon\inventory;
 use Exception;
@@ -46,7 +46,7 @@ abstract class InventoryModel
             } elseif ($this->_isDOMElement($data)) {
                 $this->_fromDOMElement($data);
             } else {
-                throw new \Exception ("Unable to construct from provided data. Please be sure to pass associative array or DOMElement");
+                throw new Exception ("Unable to construct from provided data. Please be sure to pass associative array or DOMElement");
             }
         }
     }
@@ -306,7 +306,7 @@ abstract class InventoryModel
         $xml = "";
         foreach ($this->_fields as $fieldName => $field) {
             $fieldValue = $field['FieldValue'];
-            if (!is_null($fieldValue) && $field['FieldType'] != "FBAInventoryServiceMWS_Model_ResponseHeaderMetadata") {
+            if (!is_null($fieldValue) && $field['FieldType'] != "ResponseHeaderMetadata") {
                 $fieldType = $field['FieldType'];
                 if (is_array($fieldType)) {
                     if ($fieldType[0] == "object") {

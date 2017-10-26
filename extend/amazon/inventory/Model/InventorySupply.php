@@ -17,15 +17,13 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_InventorySupply
+ * InventoryModel_InventorySupply
  * 
  * Properties:
  * <ul>
@@ -36,13 +34,13 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
  * <li>Condition: string</li>
  * <li>TotalSupplyQuantity: int</li>
  * <li>InStockSupplyQuantity: int</li>
- * <li>EarliestAvailability: FBAInventoryServiceMWS_Model_Timepoint</li>
- * <li>SupplyDetail: FBAInventoryServiceMWS_Model_InventorySupplyDetailList</li>
+ * <li>EarliestAvailability: Timepoint</li>
+ * <li>SupplyDetail: InventoryModel_InventorySupplyDetailList</li>
  *
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_InventorySupply extends FBAInventoryServiceMWS_Model {
+ class InventorySupply extends InventoryModel {
 
     public function __construct($data = null)
     {
@@ -53,8 +51,8 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     'Condition' => array('FieldValue' => null, 'FieldType' => 'string'),
     'TotalSupplyQuantity' => array('FieldValue' => null, 'FieldType' => 'int'),
     'InStockSupplyQuantity' => array('FieldValue' => null, 'FieldType' => 'int'),
-    'EarliestAvailability' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_Timepoint'),
-    'SupplyDetail' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_InventorySupplyDetailList'),
+    'EarliestAvailability' => array('FieldValue' => null, 'FieldType' => 'Timepoint'),
+    'SupplyDetail' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_InventorySupplyDetailList'),
     );
     parent::__construct($data);
     }
@@ -348,7 +346,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the EarliestAvailability property.
      *
-     * @param FBAInventoryServiceMWS_Model_Timepoint earliestAvailability
+     * @param Timepoint earliestAvailability
      * @return this instance
      */
     public function setEarliestAvailability($value)
@@ -394,7 +392,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the SupplyDetail property.
      *
-     * @param FBAInventoryServiceMWS_Model_InventorySupplyDetailList supplyDetail
+     * @param InventoryModel_InventorySupplyDetailList supplyDetail
      * @return this instance
      */
     public function setSupplyDetail($value)

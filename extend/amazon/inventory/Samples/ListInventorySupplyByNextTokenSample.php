@@ -73,8 +73,8 @@ require_once('.config.inc.php');
  * Setup request parameters and uncomment invoke to try out
  * sample for List Inventory Supply By Next Token Action
  ***********************************************************************/
- // @TODO: set request. Action can be passed as FBAInventoryServiceMWS_Model_ListInventorySupplyByNextToken
- $request = new FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenRequest();
+ // @TODO: set request. Action can be passed as InventoryModel_ListInventorySupplyByNextToken
+ $request = new ListInventorySupplyByNextTokenRequest();
  $request->setSellerId(MERCHANT_ID);
  // object or array of parameters
  invokeListInventorySupplyByNextToken($service, $request);
@@ -85,7 +85,7 @@ require_once('.config.inc.php');
   * the MarketplaceId and ASIN.
   *
   * @param FBAInventoryServiceMWS_Interface $service instance of FBAInventoryServiceMWS_Interface
-  * @param mixed $request FBAInventoryServiceMWS_Model_ListInventorySupplyByNextToken or array of parameters
+  * @param mixed $request InventoryModel_ListInventorySupplyByNextToken or array of parameters
   */
 
   function invokeListInventorySupplyByNextToken(FBAInventoryServiceMWS_Interface $service, $request)
@@ -103,7 +103,7 @@ require_once('.config.inc.php');
         echo $dom->saveXML();
         echo("ResponseHeaderMetadata: " . $response->getResponseHeaderMetadata() . "\n");
 
-     } catch (FBAInventoryServiceMWS_Exception $ex) {
+     } catch (InventoryException $ex) {
         echo("Caught Exception: " . $ex->getMessage() . "\n");
         echo("Response Status Code: " . $ex->getStatusCode() . "\n");
         echo("Error Code: " . $ex->getErrorCode() . "\n");

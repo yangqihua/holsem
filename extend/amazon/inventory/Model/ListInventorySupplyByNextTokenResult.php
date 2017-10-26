@@ -17,33 +17,31 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenResult
+ * InventoryModel_ListInventorySupplyByNextTokenResult
  * 
  * Properties:
  * <ul>
  * 
  * <li>MarketplaceId: string</li>
- * <li>InventorySupplyList: FBAInventoryServiceMWS_Model_InventorySupplyList</li>
+ * <li>InventorySupplyList: InventoryModel_InventorySupplyList</li>
  * <li>NextToken: string</li>
  *
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenResult extends FBAInventoryServiceMWS_Model {
+ class ListInventorySupplyByNextTokenResult extends InventoryModel {
 
     public function __construct($data = null)
     {
     $this->_fields = array (
     'MarketplaceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-    'InventorySupplyList' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_InventorySupplyList'),
+    'InventorySupplyList' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_InventorySupplyList'),
     'NextToken' => array('FieldValue' => null, 'FieldType' => 'string'),
     );
     parent::__construct($data);
@@ -108,7 +106,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the InventorySupplyList property.
      *
-     * @param FBAInventoryServiceMWS_Model_InventorySupplyList inventorySupplyList
+     * @param InventoryModel_InventorySupplyList inventorySupplyList
      * @return this instance
      */
     public function setInventorySupplyList($value)

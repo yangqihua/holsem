@@ -17,15 +17,13 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_GetServiceStatusResult
+ * InventoryModel_GetServiceStatusResult
  * 
  * Properties:
  * <ul>
@@ -36,7 +34,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_GetServiceStatusResult extends FBAInventoryServiceMWS_Model {
+ class GetServiceStatusResult extends InventoryModel {
 
     public function __construct($data = null)
     {

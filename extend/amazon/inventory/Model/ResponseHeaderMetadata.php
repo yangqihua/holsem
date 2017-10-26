@@ -16,8 +16,9 @@
  * Library Version: 2014-09-30
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
+namespace amazon\inventory\model;
 
-class FBAInventoryServiceMWS_Model_ResponseHeaderMetadata {
+class ResponseHeaderMetadata {
 
   const REQUEST_ID = 'x-mws-request-id';
   const RESPONSE_CONTEXT = 'x-mws-response-context';

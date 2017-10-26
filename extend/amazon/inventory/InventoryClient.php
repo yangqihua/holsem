@@ -17,10 +17,6 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Interface
- */
-require_once(dirname(__FILE__) . '/InventoryInterface.php');
 
 /**
  * FBAInventoryServiceMWS_Client is an implementation of FBAInventoryServiceMWS
@@ -29,6 +25,14 @@ require_once(dirname(__FILE__) . '/InventoryInterface.php');
 namespace amazon\inventory;
 
 use Exception;
+use amazon\inventory\model\GetServiceStatusRequest;
+use amazon\inventory\model\GetServiceStatusResponse;
+use amazon\inventory\model\ListInventorySupplyRequest;
+use amazon\inventory\model\ListInventorySupplyResponse;
+use amazon\inventory\model\ListInventorySupplyByNextTokenRequest;
+use amazon\inventory\model\ListInventorySupplyByNextTokenResponse;
+use amazon\inventory\model\ResponseHeaderMetadata;
+use InvalidArgumentException;
 
 class InventoryClient implements InventoryInterface
 {
@@ -63,24 +67,24 @@ class InventoryClient implements InventoryInterface
      *     GREEN: The service section is operating normally.
      *     RED: The service section disruption.
      *
-     * @param mixed $request array of parameters for FBAInventoryServiceMWS_Model_GetServiceStatus request or FBAInventoryServiceMWS_Model_GetServiceStatus object itself
-     * @see FBAInventoryServiceMWS_Model_GetServiceStatusRequest
-     * @return FBAInventoryServiceMWS_Model_GetServiceStatusResponse
+     * @param mixed $request array of parameters for InventoryModel_GetServiceStatus request or InventoryModel_GetServiceStatus object itself
+     * @see GetServiceStatusRequest
+     * @return GetServiceStatusResponse
      *
-     * @throws FBAInventoryServiceMWS_Exception
+     * @throws InventoryException
      */
     public function getServiceStatus($request)
     {
-        if (!($request instanceof FBAInventoryServiceMWS_Model_GetServiceStatusRequest)) {
+        if (!($request instanceof GetServiceStatusRequest)) {
             require_once (dirname(__FILE__) . '/Model/GetServiceStatusRequest.php');
-            $request = new FBAInventoryServiceMWS_Model_GetServiceStatusRequest($request);
+            $request = new GetServiceStatusRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'GetServiceStatus';
         $httpResponse = $this->_invoke($parameters);
 
         require_once (dirname(__FILE__) . '/Model/GetServiceStatusResponse.php');
-        $response = FBAInventoryServiceMWS_Model_GetServiceStatusResponse::fromXML($httpResponse['ResponseBody']);
+        $response = GetServiceStatusResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
     }
@@ -140,24 +144,24 @@ class InventoryClient implements InventoryInterface
      *     passing in the NextToken value from the previous result), until the returned NextToken
      *     is null, indicating no further results are available.
      *
-     * @param mixed $request array of parameters for FBAInventoryServiceMWS_Model_ListInventorySupply request or FBAInventoryServiceMWS_Model_ListInventorySupply object itself
-     * @see FBAInventoryServiceMWS_Model_ListInventorySupplyRequest
-     * @return FBAInventoryServiceMWS_Model_ListInventorySupplyResponse
+     * @param mixed $request array of parameters for InventoryModel_ListInventorySupply request or InventoryModel_ListInventorySupply object itself
+     * @see ListInventorySupplyRequest
+     * @return ListInventorySupplyResponse
      *
-     * @throws FBAInventoryServiceMWS_Exception
+     * @throws InventoryException
      */
     public function listInventorySupply($request)
     {
-        if (!($request instanceof FBAInventoryServiceMWS_Model_ListInventorySupplyRequest)) {
+        if (!($request instanceof ListInventorySupplyRequest)) {
             require_once (dirname(__FILE__) . '/Model/ListInventorySupplyRequest.php');
-            $request = new FBAInventoryServiceMWS_Model_ListInventorySupplyRequest($request);
+            $request = new ListInventorySupplyRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'ListInventorySupply';
         $httpResponse = $this->_invoke($parameters);
 
         require_once (dirname(__FILE__) . '/Model/ListInventorySupplyResponse.php');
-        $response = FBAInventoryServiceMWS_Model_ListInventorySupplyResponse::fromXML($httpResponse['ResponseBody']);
+        $response = ListInventorySupplyResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
     }
@@ -207,24 +211,24 @@ class InventoryClient implements InventoryInterface
      *     This operation is used in conjunction with ListUpdatedInventorySupply.
      *     Please refer to documentation for that operation for further details.
      *
-     * @param mixed $request array of parameters for FBAInventoryServiceMWS_Model_ListInventorySupplyByNextToken request or FBAInventoryServiceMWS_Model_ListInventorySupplyByNextToken object itself
-     * @see FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenRequest
-     * @return FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenResponse
+     * @param mixed $request array of parameters for InventoryModel_ListInventorySupplyByNextToken request or InventoryModel_ListInventorySupplyByNextToken object itself
+     * @see ListInventorySupplyByNextTokenRequest
+     * @return ListInventorySupplyByNextTokenResponse
      *
-     * @throws FBAInventoryServiceMWS_Exception
+     * @throws InventoryException
      */
     public function listInventorySupplyByNextToken($request)
     {
-        if (!($request instanceof FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenRequest)) {
+        if (!($request instanceof ListInventorySupplyByNextTokenRequest)) {
             require_once (dirname(__FILE__) . '/Model/ListInventorySupplyByNextTokenRequest.php');
-            $request = new FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenRequest($request);
+            $request = new ListInventorySupplyByNextTokenRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'ListInventorySupplyByNextToken';
         $httpResponse = $this->_invoke($parameters);
 
         require_once (dirname(__FILE__) . '/Model/ListInventorySupplyByNextTokenResponse.php');
-        $response = FBAInventoryServiceMWS_Model_ListInventorySupplyByNextTokenResponse::fromXML($httpResponse['ResponseBody']);
+        $response = ListInventorySupplyByNextTokenResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
     }
@@ -418,7 +422,7 @@ class InventoryClient implements InventoryInterface
         try {
             if (empty($this->_config['ServiceURL'])) {
                 require_once(dirname(__FILE__) . '/InventoryException.php');
-                throw new FBAInventoryServiceMWS_Exception(
+                throw new InventoryException(
                     array ('ErrorCode' => 'InvalidServiceURL',
                            'Message' => "Missing serviceUrl configuration value. You may obtain a list of valid MWS URLs by consulting the MWS Developer's Guide, or reviewing the sample code published along side this library."));
             }
@@ -437,11 +441,11 @@ class InventoryClient implements InventoryInterface
                 throw $this->_reportAnyErrors($response['ResponseBody'],
                     $status, $response['ResponseHeaderMetadata']);
             }
-        } catch (FBAInventoryServiceMWS_Exception $se) {
+        } catch (InventoryException $se) {
             throw $se;
         } catch (Exception $t) {
             require_once(dirname(__FILE__) . '/InventoryException.php');
-            throw new FBAInventoryServiceMWS_Exception(array('Exception' => $t, 'Message' => $t->getMessage()));
+            throw new InventoryException(array('Exception' => $t, 'Message' => $t->getMessage()));
         }
     }
 
@@ -468,7 +472,7 @@ class InventoryClient implements InventoryInterface
         }
 
         require_once(dirname(__FILE__) . '/InventoryException.php');
-        return new FBAInventoryServiceMWS_Exception($exProps);
+        return new InventoryException($exProps);
     }
 
 
@@ -536,7 +540,7 @@ class InventoryClient implements InventoryInterface
             $exProps["Message"] = curl_error($ch);
             $exProps["ErrorType"] = "HTTP";
             curl_close($ch);
-            throw new FBAInventoryServiceMWS_Exception($exProps);
+            throw new InventoryException($exProps);
         }
 
         curl_close($ch);
@@ -587,7 +591,7 @@ class InventoryClient implements InventoryInterface
             require_once(dirname(__FILE__) . '/InventoryException.php');
             $exProps["Message"] = "Failed to parse valid HTTP response (" . $response . ")";
             $exProps["ErrorType"] = "HTTP";
-            throw new FBAInventoryServiceMWS_Exception($exProps);
+            throw new InventoryException($exProps);
         }
 
         return array(
@@ -649,7 +653,7 @@ class InventoryClient implements InventoryInterface
         }
  
         require_once(dirname(__FILE__) . '/Model/ResponseHeaderMetadata.php');
-        return new FBAInventoryServiceMWS_Model_ResponseHeaderMetadata(
+        return new ResponseHeaderMetadata(
           $headers['x-mws-request-id'],
           $headers['x-mws-response-context'],
           $headers['x-mws-timestamp'],
@@ -671,6 +675,7 @@ class InventoryClient implements InventoryInterface
      * Exponential sleep on failed request
      *
      * @param retries current retry
+     * @return bool
      */
     private function _pauseOnRetry($retries)
     {

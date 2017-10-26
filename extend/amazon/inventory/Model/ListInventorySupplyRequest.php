@@ -17,15 +17,13 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_ListInventorySupplyRequest
+ * ListInventorySupplyRequest
  * 
  * Properties:
  * <ul>
@@ -34,14 +32,14 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
  * <li>MWSAuthToken: string</li>
  * <li>Marketplace: string</li>
  * <li>MarketplaceId: string</li>
- * <li>SellerSkus: FBAInventoryServiceMWS_Model_SellerSkuList</li>
+ * <li>SellerSkus: InventoryModel_SellerSkuList</li>
  * <li>QueryStartDateTime: string</li>
  * <li>ResponseGroup: string</li>
  *
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_ListInventorySupplyRequest extends FBAInventoryServiceMWS_Model {
+ class ListInventorySupplyRequest extends InventoryModel {
 
     public function __construct($data = null)
     {
@@ -50,7 +48,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     'MWSAuthToken' => array('FieldValue' => null, 'FieldType' => 'string'),
     'Marketplace' => array('FieldValue' => null, 'FieldType' => 'string'),
     'MarketplaceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-    'SellerSkus' => array('FieldValue' => null, 'FieldType' => 'FBAInventoryServiceMWS_Model_SellerSkuList'),
+    'SellerSkus' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_SellerSkuList'),
     'QueryStartDateTime' => array('FieldValue' => null, 'FieldType' => 'string'),
     'ResponseGroup' => array('FieldValue' => null, 'FieldType' => 'string'),
     );
@@ -254,7 +252,7 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
     /**
      * Set the value of the SellerSkus property.
      *
-     * @param FBAInventoryServiceMWS_Model_SellerSkuList sellerSkus
+     * @param InventoryModel_SellerSkuList sellerSkus
      * @return this instance
      */
     public function setSellerSkus($value)

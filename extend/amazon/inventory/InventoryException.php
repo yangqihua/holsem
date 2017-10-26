@@ -24,7 +24,8 @@
  *
  */
 namespace amazon\inventory;
-class InventoryException extends \Exception
+use Exception;
+class InventoryException extends Exception
 
 {
     /** @var string */

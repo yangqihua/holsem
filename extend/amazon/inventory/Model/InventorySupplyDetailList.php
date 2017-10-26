@@ -17,15 +17,13 @@
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
 
-/**
- *  @see FBAInventoryServiceMWS_Model
- */
+namespace amazon\inventory\model;
 
-require_once(dirname(__FILE__) . '/../InventoryModel.php');
+use amazon\inventory\InventoryModel;
 
 
 /**
- * FBAInventoryServiceMWS_Model_InventorySupplyDetailList
+ * InventoryModel_InventorySupplyDetailList
  * 
  * Properties:
  * <ul>
@@ -35,12 +33,12 @@ require_once(dirname(__FILE__) . '/../InventoryModel.php');
  * </ul>
  */
 
- class FBAInventoryServiceMWS_Model_InventorySupplyDetailList extends FBAInventoryServiceMWS_Model {
+ class InventorySupplyDetailList extends InventoryModel {
 
     public function __construct($data = null)
     {
     $this->_fields = array (
-    'member' => array('FieldValue' => array(), 'FieldType' => array('FBAInventoryServiceMWS_Model_InventorySupplyDetail')),
+    'member' => array('FieldValue' => array(), 'FieldType' => array('InventoryModel_InventorySupplyDetail')),
     );
     parent::__construct($data);
     }
