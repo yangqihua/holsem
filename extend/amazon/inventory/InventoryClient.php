@@ -422,6 +422,9 @@ class InventoryClient implements InventoryInterface
 
     /**
      * Invoke request and return response
+     * @param array $parameters
+     * @return array
+     * @throws InventoryException
      */
     private function _invoke(array $parameters)
     {

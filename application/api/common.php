@@ -224,11 +224,21 @@ if (!function_exists('getInventoryList()')) {
         $request->setMarketplaceId(config('amazon.marketplace_id'));
         $request->setResponseGroup('Basic');
         $sellerSkuList = new SellerSkuList();
-        $sellerSkuList->setmember('HOLSEM-X12B');
+        $sellerSkuList->setmember(['HOLSEM-S12','HOLSEM-X12B','HOLSEM-X5', 'HOLSEM-X5B','HOLSEM-X8', 'HOLSEM-X8B', 'HOLSEM-A1']);
         $request->setSellerSkus($sellerSkuList);
         try {
+
             $response = $service->ListInventorySupply($request);
-            return ['inventoryList' => $response, 'message' => 'ok', 'code' => 200];
+            $inventorySupplyList = $response->getListInventorySupplyResult()->getInventorySupplyList()->getmember();
+            $inventoryList = [];
+            foreach ($inventorySupplyList as $key=>$inventorySupply){
+                $inventory = [
+                    'seller_sku'=>$inventorySupply->getSellerSKU(),
+                    'count'=>$inventorySupply->getInStockSupplyQuantity()
+                ];
+                $inventoryList[] = $inventory;
+            }
+            return ['inventoryList' => $inventoryList, 'message' => 'ok', 'code' => 200];
         } catch (InventoryException $ex) {
             return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
         }

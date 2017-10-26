@@ -38,7 +38,7 @@ use amazon\inventory\InventoryModel;
     public function __construct($data = null)
     {
     $this->_fields = array (
-    'member' => array('FieldValue' => array(), 'FieldType' => array('InventoryModel_InventorySupply')),
+    'member' => array('FieldValue' => array(), 'FieldType' => array('InventorySupply')),
     );
     parent::__construct($data);
     }

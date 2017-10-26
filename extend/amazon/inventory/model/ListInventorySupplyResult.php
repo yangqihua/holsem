@@ -34,13 +34,13 @@ use amazon\inventory\InventoryModel;
  * </ul>
  */
 
- class InventoryModel_ListInventorySupplyResult extends InventoryModel {
+ class ListInventorySupplyResult extends InventoryModel {
 
     public function __construct($data = null)
     {
     $this->_fields = array (
     'MarketplaceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-    'InventorySupplyList' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_InventorySupplyList'),
+    'InventorySupplyList' => array('FieldValue' => null, 'FieldType' => 'InventorySupplyList'),
     'NextToken' => array('FieldValue' => null, 'FieldType' => 'string'),
     );
     parent::__construct($data);

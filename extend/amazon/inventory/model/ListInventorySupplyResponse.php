@@ -29,7 +29,7 @@ use Exception;
  * Properties:
  * <ul>
  * 
- * <li>ListInventorySupplyResult: InventoryModel_ListInventorySupplyResult</li>
+ * <li>ListInventorySupplyResult: ListInventorySupplyResult</li>
  * <li>ResponseMetadata: ResponseMetadata</li>
  * <li>ResponseHeaderMetadata: ResponseHeaderMetadata</li>
  *
@@ -41,7 +41,7 @@ use Exception;
     public function __construct($data = null)
     {
     $this->_fields = array (
-    'ListInventorySupplyResult' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_ListInventorySupplyResult'),
+    'ListInventorySupplyResult' => array('FieldValue' => null, 'FieldType' => 'ListInventorySupplyResult'),
     'ResponseMetadata' => array('FieldValue' => null, 'FieldType' => 'ResponseMetadata'),
     'ResponseHeaderMetadata' => array('FieldValue' => null, 'FieldType' => 'ResponseHeaderMetadata'),
     );
@@ -61,7 +61,7 @@ use Exception;
     /**
      * Set the value of the ListInventorySupplyResult property.
      *
-     * @param InventoryModel_ListInventorySupplyResult listInventorySupplyResult
+     * @param ListInventorySupplyResult listInventorySupplyResult
      * @return this instance
      */
     public function setListInventorySupplyResult($value)

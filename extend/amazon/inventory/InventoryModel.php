@@ -125,9 +125,13 @@ abstract class InventoryModel
                        $elements = $xpath->query("./*[local-name()='$fieldName']", $dom);
                     }
                     if ($elements->length >= 1) {
-                        require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $fieldType[0]) . ".php");
+//                        require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $fieldType[0]) . ".php");
+//                        foreach ($elements as $element) {
+//                            $this->_fields[$fieldName]['FieldValue'][] = new $fieldType[0]($element);
+//                        }
                         foreach ($elements as $element) {
-                            $this->_fields[$fieldName]['FieldValue'][] = new $fieldType[0]($element);
+                            $classType = 'amazon\inventory\model\\' . $fieldType[0];
+                            $this->_fields[$fieldName]['FieldValue'][] = new $classType($element);
                         }
                     } 
                 } else {
