@@ -193,6 +193,65 @@ if (!function_exists('getOrderItemList($orderId)')) {
 
 }
 
+if (!function_exists('getInventoryList()')) {
+
+    function getInventoryList()
+    {
+        $config = array(
+            'ServiceURL' => config('amazon.service_url'),
+            'ProxyHost' => null,
+            'ProxyPort' => -1,
+            'ProxyUsername' => null,
+            'ProxyPassword' => null,
+            'MaxErrorRetry' => 3,
+        );
+
+        $service = new OrderClient(
+            config('amazon.aws_access_key_id'),
+            config('amazon.aws_secret_access_key'),
+            config('amazon.application_name'),
+            config('amazon.application_version'),
+            $config);
+
+        $request = new ListOrderItemsRequest();
+        $request->setSellerId(config('amazon.merchant_id'));
+        try {
+            $response = $service->ListOrderItems($request);
+
+            $orderItemResultList = $response->getListOrderItemsResult()->getOrderItems();
+
+            $orderItemList = [];
+            foreach ($orderItemResultList as $orderItemResult) {
+                $orderItem = [];
+                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
+                $orderItem['title'] = $orderItemResult->getTitle();
+                $orderItem['asin'] = $orderItemResult->getASIN();
+                $orderItem['seller_sku'] = $orderItemResult->getSellerSKU();
+                $orderItem['order_item_id'] = $orderItemResult->getOrderItemId();
+                $orderItem['quantity_shipped'] = $orderItemResult->getQuantityShipped();
+                $promotionDiscount = $orderItemResult->getPromotionDiscount();
+                if (null != $promotionDiscount) {
+                    $orderItem['promotion_discount'] = json_encode(['CurrencyCode' => $promotionDiscount->getCurrencyCode(), 'Amount' => $promotionDiscount->getAmount()]);
+                }
+                $itemPrice = $orderItemResult->getItemPrice();
+                if (null != $itemPrice) {
+                    $orderItem['item_price'] = json_encode(['CurrencyCode' => $itemPrice->getCurrencyCode(), 'Amount' => $itemPrice->getAmount()]);
+                }
+                $itemTax = $orderItemResult->getItemTax();
+                if (null != $itemTax) {
+                    $orderItem['item_tax'] = json_encode(['CurrencyCode' => $itemTax->getCurrencyCode(), 'Amount' => $itemTax->getAmount()]);
+                }
+                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
+                $orderItemList[] = $orderItem;
+            }
+            return ['orderItemList' => $orderItemList, 'message' => 'ok', 'code' => 200];
+        } catch (OrderException $ex) {
+            return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
+        }
+    }
+
+}
+
 if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategoryList)')) {
     function sendCustomersMail($receiver_address, $name, $orderCategoryList)
     {
