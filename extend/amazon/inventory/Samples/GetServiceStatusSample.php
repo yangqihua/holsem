@@ -21,6 +21,13 @@
  * Get Service Status Sample
  */
 
+namespace amazon\inventory\Sample;
+use amazon\inventory\InventoryClient;
+use amazon\inventory\InventoryInterface;
+use amazon\inventory\InventoryException;
+use amazon\inventory\model\GetServiceStatusRequest;
+use DOMDocument;
+
 require_once('.config.inc.php');
 
 /************************************************************************
@@ -88,7 +95,7 @@ require_once('.config.inc.php');
   * @param mixed $request InventoryModel_GetServiceStatus or array of parameters
   */
 
-  function invokeGetServiceStatus(FBAInventoryServiceMWS_Interface $service, $request)
+  function invokeGetServiceStatus(InventoryInterface $service, $request)
   {
       try {
         $response = $service->GetServiceStatus($request);

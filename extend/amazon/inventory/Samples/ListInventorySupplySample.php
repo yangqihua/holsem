@@ -20,6 +20,13 @@
 /**
  * List Inventory Supply Sample
  */
+namespace amazon\inventory\Sample;
+use amazon\inventory\InventoryClient;
+use amazon\inventory\InventoryInterface;
+use amazon\inventory\InventoryException;
+use amazon\inventory\model\ListInventorySupplyRequest;
+use DOMDocument;
+
 
 require_once('.config.inc.php');
 
@@ -50,7 +57,7 @@ require_once('.config.inc.php');
    'MaxErrorRetry' => 3,
  );
 
- $service = new FBAInventoryServiceMWS_Client(
+ $service = new InventoryClient(
                    AWS_ACCESS_KEY_ID,
                    AWS_SECRET_ACCESS_KEY,
                    $config,
@@ -80,15 +87,15 @@ require_once('.config.inc.php');
  invokeListInventorySupply($service, $request);
 
 /**
-  * Get List Inventory Supply Action Sample
-  * Gets competitive pricing and related information for a product identified by
-  * the MarketplaceId and ASIN.
-  *
-  * @param FBAInventoryServiceMWS_Interface $service instance of FBAInventoryServiceMWS_Interface
-  * @param mixed $request InventoryModel_ListInventorySupply or array of parameters
-  */
+ * Get List Inventory Supply Action Sample
+ * Gets competitive pricing and related information for a product identified by
+ * the MarketplaceId and ASIN.
+ *
+ * @param InventoryInterface $service
+ * @param mixed $request InventoryModel_ListInventorySupply or array of parameters
+ */
 
-  function invokeListInventorySupply(FBAInventoryServiceMWS_Interface $service, $request)
+  function invokeListInventorySupply(InventoryInterface $service, $request)
   {
       try {
         $response = $service->ListInventorySupply($request);
