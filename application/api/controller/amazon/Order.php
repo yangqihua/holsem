@@ -296,4 +296,9 @@ class Order extends Api
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
         }
     }
+
+    public function test(){
+        $response = getInventoryList();
+        return json($response);
+    }
 }

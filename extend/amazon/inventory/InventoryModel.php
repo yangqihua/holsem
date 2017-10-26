@@ -148,9 +148,15 @@ abstract class InventoryModel
                 if ($this->_isComplexType($fieldType)) {
                     $elements = $xpath->query("./*[local-name()='$fieldName']", $dom);
                     if ($elements->length == 1) {
-                        require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $fieldType) . ".php");
+                        $fieldType = 'amazon\inventory\model\\' . $fieldType;
                         $this->_fields[$fieldName]['FieldValue'] = new $fieldType($elements->item(0));
-                    }   
+                    }
+
+//                    $elements = $xpath->query("./*[local-name()='$fieldName']", $dom);
+//                    if ($elements->length == 1) {
+//                        require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $fieldType) . ".php");
+//                        $this->_fields[$fieldName]['FieldValue'] = new $fieldType($elements->item(0));
+//                    }
                 } else {
                     if($fieldType[0] == "@") {
                         $attribute = $xpath->query("./@$fieldName", $dom);
@@ -408,7 +414,12 @@ abstract class InventoryModel
      */
     private function _isComplexType ($fieldType) 
     {
-        return preg_match("/^FBAInventoryServiceMWS_/", $fieldType);
+        $fileName = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . $fieldType . '.php';
+        if (file_exists($fileName)) {
+            return true;
+        }
+        return false;
+//        return preg_match("/^FBAInventoryServiceMWS_/", $fieldType);
     }
 
    /**

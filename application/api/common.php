@@ -6,6 +6,11 @@ use amazon\order\model\ListOrderItemsRequest;
 use amazon\order\OrderClient;
 use amazon\order\OrderException;
 
+use amazon\inventory\InventoryClient;
+use amazon\inventory\InventoryException;
+use amazon\inventory\model\ListInventorySupplyRequest;
+use amazon\inventory\model\SellerSkuList;
+
 use app\common\library\Email;
 
 
@@ -198,7 +203,7 @@ if (!function_exists('getInventoryList()')) {
     function getInventoryList()
     {
         $config = array(
-            'ServiceURL' => config('amazon.service_url'),
+            'ServiceURL' => config('amazon.inventory_service_url'),
             'ProxyHost' => null,
             'ProxyPort' => -1,
             'ProxyUsername' => null,
@@ -206,51 +211,31 @@ if (!function_exists('getInventoryList()')) {
             'MaxErrorRetry' => 3,
         );
 
-        $service = new OrderClient(
+        $service = new InventoryClient(
             config('amazon.aws_access_key_id'),
             config('amazon.aws_secret_access_key'),
+            $config,
             config('amazon.application_name'),
-            config('amazon.application_version'),
-            $config);
+            config('amazon.application_version')
+        );
 
-        $request = new ListOrderItemsRequest();
+        $request = new ListInventorySupplyRequest();
         $request->setSellerId(config('amazon.merchant_id'));
+        $request->setMarketplaceId(config('amazon.marketplace_id'));
+        $request->setResponseGroup('Basic');
+        $sellerSkuList = new SellerSkuList();
+        $sellerSkuList->setmember('HOLSEM-X12B');
+        $request->setSellerSkus($sellerSkuList);
         try {
-            $response = $service->ListOrderItems($request);
-
-            $orderItemResultList = $response->getListOrderItemsResult()->getOrderItems();
-
-            $orderItemList = [];
-            foreach ($orderItemResultList as $orderItemResult) {
-                $orderItem = [];
-                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
-                $orderItem['title'] = $orderItemResult->getTitle();
-                $orderItem['asin'] = $orderItemResult->getASIN();
-                $orderItem['seller_sku'] = $orderItemResult->getSellerSKU();
-                $orderItem['order_item_id'] = $orderItemResult->getOrderItemId();
-                $orderItem['quantity_shipped'] = $orderItemResult->getQuantityShipped();
-                $promotionDiscount = $orderItemResult->getPromotionDiscount();
-                if (null != $promotionDiscount) {
-                    $orderItem['promotion_discount'] = json_encode(['CurrencyCode' => $promotionDiscount->getCurrencyCode(), 'Amount' => $promotionDiscount->getAmount()]);
-                }
-                $itemPrice = $orderItemResult->getItemPrice();
-                if (null != $itemPrice) {
-                    $orderItem['item_price'] = json_encode(['CurrencyCode' => $itemPrice->getCurrencyCode(), 'Amount' => $itemPrice->getAmount()]);
-                }
-                $itemTax = $orderItemResult->getItemTax();
-                if (null != $itemTax) {
-                    $orderItem['item_tax'] = json_encode(['CurrencyCode' => $itemTax->getCurrencyCode(), 'Amount' => $itemTax->getAmount()]);
-                }
-                $orderItem['quantity_ordered'] = $orderItemResult->getQuantityOrdered();
-                $orderItemList[] = $orderItem;
-            }
-            return ['orderItemList' => $orderItemList, 'message' => 'ok', 'code' => 200];
-        } catch (OrderException $ex) {
+            $response = $service->ListInventorySupply($request);
+            return ['inventoryList' => $response, 'message' => 'ok', 'code' => 200];
+        } catch (InventoryException $ex) {
             return ["message" => $ex->getMessage(), "code" => $ex->getStatusCode()];
         }
     }
 
 }
+
 
 if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategoryList)')) {
     function sendCustomersMail($receiver_address, $name, $orderCategoryList)
@@ -273,7 +258,7 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 $v = "\n    https://www.amazon.com/dp/B01H14SFRM";
             } else if ($value == 'HOLSEM-X12B') {
                 $v = "\n    https://www.amazon.com/dp/B01LYHEC16";
-            }else if ($value == 'HOLSEM-D7'){  // 刀的求好评邮件 todo:有没有既有刀又有其他商品的订单
+            } else if ($value == 'HOLSEM-D7') {  // 刀的求好评邮件 todo:有没有既有刀又有其他商品的订单
                 $subject = config('mail_text.subject');
                 $message = sprintf(config('mail_text.knife_content'), $name);
                 $email = new Email;
@@ -287,16 +272,16 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 } else {
                     return ['code' => 500, 'message' => $email->getError()];
                 }
-            }else if($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'){
+            } else if ($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2') {
                 // todo: 发送炸锅的邮件
                 $a_link = '';
-                if($value == 'HOLSEM-A1'){
+                if ($value == 'HOLSEM-A1') {
                     $a_link = "\n    https://www.amazon.com/dp/B072JJBZ37";
-                }else{
+                } else {
                     $a_link = "\n    https://www.amazon.com/dp/B071W83YND";
                 }
                 $subject = config('mail_text.subject');
-                $message = sprintf(config('mail_text.zg_content'), $name,$a_link);
+                $message = sprintf(config('mail_text.zg_content'), $name, $a_link);
                 $email = new Email;
                 $result = $email
                     ->to($receiver_address)
@@ -320,8 +305,8 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
         }
         $holsemString = join("", $holsems);
 
-        if($holsemString==''){
-            return ['code' => 500, 'message' => '不能匹配商品列表，不发送邮件给 '.$receiver_address];
+        if ($holsemString == '') {
+            return ['code' => 500, 'message' => '不能匹配商品列表，不发送邮件给 ' . $receiver_address];
         }
 
         $subject = config('mail_text.subject');

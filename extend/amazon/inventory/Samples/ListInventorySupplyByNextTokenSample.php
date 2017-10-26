@@ -20,7 +20,12 @@
 /**
  * List Inventory Supply By Next Token Sample
  */
-
+namespace amazon\inventory\Sample;
+use amazon\inventory\InventoryClient;
+use amazon\inventory\InventoryInterface;
+use amazon\inventory\InventoryException;
+use amazon\inventory\model\ListInventorySupplyByNextTokenRequest;
+use DOMDocument;
 require_once('.config.inc.php');
 
 /************************************************************************
@@ -50,7 +55,7 @@ require_once('.config.inc.php');
    'MaxErrorRetry' => 3,
  );
 
- $service = new FBAInventoryServiceMWS_Client(
+ $service = new InventoryClient(
                    AWS_ACCESS_KEY_ID,
                    AWS_SECRET_ACCESS_KEY,
                    $config,

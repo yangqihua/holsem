@@ -76,14 +76,14 @@ class InventoryClient implements InventoryInterface
     public function getServiceStatus($request)
     {
         if (!($request instanceof GetServiceStatusRequest)) {
-            require_once (dirname(__FILE__) . '/Model/GetServiceStatusRequest.php');
+            require_once(dirname(__FILE__) . '/model/GetServiceStatusRequest.php');
             $request = new GetServiceStatusRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'GetServiceStatus';
         $httpResponse = $this->_invoke($parameters);
 
-        require_once (dirname(__FILE__) . '/Model/GetServiceStatusResponse.php');
+        require_once(dirname(__FILE__) . '/model/GetServiceStatusResponse.php');
         $response = GetServiceStatusResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
@@ -153,14 +153,14 @@ class InventoryClient implements InventoryInterface
     public function listInventorySupply($request)
     {
         if (!($request instanceof ListInventorySupplyRequest)) {
-            require_once (dirname(__FILE__) . '/Model/ListInventorySupplyRequest.php');
+            require_once(dirname(__FILE__) . '/model/ListInventorySupplyRequest.php');
             $request = new ListInventorySupplyRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'ListInventorySupply';
         $httpResponse = $this->_invoke($parameters);
 
-        require_once (dirname(__FILE__) . '/Model/ListInventorySupplyResponse.php');
+        require_once(dirname(__FILE__) . '/model/ListInventorySupplyResponse.php');
         $response = ListInventorySupplyResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
@@ -220,14 +220,14 @@ class InventoryClient implements InventoryInterface
     public function listInventorySupplyByNextToken($request)
     {
         if (!($request instanceof ListInventorySupplyByNextTokenRequest)) {
-            require_once (dirname(__FILE__) . '/Model/ListInventorySupplyByNextTokenRequest.php');
+            require_once(dirname(__FILE__) . '/model/ListInventorySupplyByNextTokenRequest.php');
             $request = new ListInventorySupplyByNextTokenRequest($request);
         }
         $parameters = $request->toQueryParameterArray();
         $parameters['Action'] = 'ListInventorySupplyByNextToken';
         $httpResponse = $this->_invoke($parameters);
 
-        require_once (dirname(__FILE__) . '/Model/ListInventorySupplyByNextTokenResponse.php');
+        require_once(dirname(__FILE__) . '/model/ListInventorySupplyByNextTokenResponse.php');
         $response = ListInventorySupplyByNextTokenResponse::fromXML($httpResponse['ResponseBody']);
         $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
         return $response;
@@ -258,7 +258,6 @@ class InventoryClient implements InventoryInterface
     }
 
 
-
     /**
      * Construct new Client
      *
@@ -277,13 +276,20 @@ class InventoryClient implements InventoryInterface
      * <li>ProxyPassword<li>
      * <li>MaxErrorRetry</li>
      * </ul>
+     * @param $applicationName
+     * @param $applicationVersion
+     * @param null $attributes
      */
     public function __construct(
     $awsAccessKeyId, $awsSecretAccessKey, $config, $applicationName, $applicationVersion, $attributes = null)
     {
-        iconv_set_encoding('output_encoding', 'UTF-8');
-        iconv_set_encoding('input_encoding', 'UTF-8');
-        iconv_set_encoding('internal_encoding', 'UTF-8');
+        if (PHP_VERSION_ID < 50600) {
+            iconv_set_encoding('input_encoding', 'UTF-8');
+            iconv_set_encoding('output_encoding', 'UTF-8');
+            iconv_set_encoding('internal_encoding', 'UTF-8');
+        } else {
+            ini_set('default_charset', 'UTF-8');
+        }
 
         $this->_awsAccessKeyId = $awsAccessKeyId;
         $this->_awsSecretAccessKey = $awsSecretAccessKey;
@@ -476,10 +482,11 @@ class InventoryClient implements InventoryInterface
     }
 
 
-
     /**
      * Perform HTTP post with exponential retries on error 500 and 503
-     *
+     * @param array $parameters
+     * @return array
+     * @throws InventoryException
      */
     private function _httpPost(array $parameters)
     {
@@ -652,7 +659,7 @@ class InventoryClient implements InventoryInterface
             }
         }
  
-        require_once(dirname(__FILE__) . '/Model/ResponseHeaderMetadata.php');
+        require_once(dirname(__FILE__) . '/model/ResponseHeaderMetadata.php');
         return new ResponseHeaderMetadata(
           $headers['x-mws-request-id'],
           $headers['x-mws-response-context'],
@@ -706,6 +713,8 @@ class InventoryClient implements InventoryInterface
 
     /**
      * Convert paremeters to Url encoded query string
+     * @param array $parameters
+     * @return string
      */
     private function _getParametersAsString(array $parameters)
     {
@@ -745,7 +754,10 @@ class InventoryClient implements InventoryInterface
      *       Parameter names are separated from their values by the '=' character
      *       (ASCII character 61), even if the value is empty.
      *       Pairs of parameter and values are separated by the '&' character (ASCII code 38).
-     *
+     * @param array $parameters
+     * @param $key
+     * @return string
+     * @throws Exception
      */
     private function _signParameters(array $parameters, $key) {
         $signatureVersion = $parameters['SignatureVersion'];
@@ -791,6 +803,11 @@ class InventoryClient implements InventoryInterface
 
     /**
      * Computes RFC 2104-compliant HMAC signature.
+     * @param $data
+     * @param $key
+     * @param $algorithm
+     * @return string
+     * @throws Exception
      */
     private function _sign($data, $key, $algorithm)
     {

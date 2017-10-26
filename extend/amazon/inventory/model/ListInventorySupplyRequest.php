@@ -48,7 +48,7 @@ use amazon\inventory\InventoryModel;
     'MWSAuthToken' => array('FieldValue' => null, 'FieldType' => 'string'),
     'Marketplace' => array('FieldValue' => null, 'FieldType' => 'string'),
     'MarketplaceId' => array('FieldValue' => null, 'FieldType' => 'string'),
-    'SellerSkus' => array('FieldValue' => null, 'FieldType' => 'InventoryModel_SellerSkuList'),
+    'SellerSkus' => array('FieldValue' => null, 'FieldType' => 'SellerSkuList'),
     'QueryStartDateTime' => array('FieldValue' => null, 'FieldType' => 'string'),
     'ResponseGroup' => array('FieldValue' => null, 'FieldType' => 'string'),
     );
