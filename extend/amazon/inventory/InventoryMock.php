@@ -20,9 +20,9 @@
 /**
  *  @see FBAInventoryServiceMWS_Interface
  */
-require_once (dirname(__FILE__) . '/Interface.php'); 
+namespace amazon\inventory;
 
-class FBAInventoryServiceMWS_Mock implements FBAInventoryServiceMWS_Interface
+class InventoryMock implements InventoryInterface
 {
     // Public API ------------------------------------------------------------//
 

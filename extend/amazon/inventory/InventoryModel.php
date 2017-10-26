@@ -20,7 +20,13 @@
 /**
  * FBAInventoryServiceMWS_Model - base class for all model classes
  */
-abstract class FBAInventoryServiceMWS_Model
+namespace amazon\inventory;
+use Exception;
+use DOMElement;
+use DOMXPath;
+use DOMDocument;
+
+abstract class InventoryModel
 {
 
     /** @var array */
@@ -28,8 +34,9 @@ abstract class FBAInventoryServiceMWS_Model
 
     /**
      * Construct new model class
-     * 
-     * @param mixed $data - DOMElement or Associative Array to construct from. 
+     *
+     * @param mixed $data - DOMElement or Associative Array to construct from.
+     * @throws \Exception
      */
     public function __construct($data = null)
     {
@@ -39,7 +46,7 @@ abstract class FBAInventoryServiceMWS_Model
             } elseif ($this->_isDOMElement($data)) {
                 $this->_fromDOMElement($data);
             } else {
-                throw new Exception ("Unable to construct from provided data. Please be sure to pass associative array or DOMElement");
+                throw new \Exception ("Unable to construct from provided data. Please be sure to pass associative array or DOMElement");
             }
         }
     }
@@ -64,17 +71,18 @@ abstract class FBAInventoryServiceMWS_Model
     }
 
     /**
-     * Support for virtual properties setters. 
+     * Support for virtual properties setters.
      *
      * Virtual property call example:
-     * 
+     *
      *   $action->Property  = 'ABC'
-     * 
+     *
      * Direct setter (preferred):
-     * 
-     *   $action->setProperty('ABC')     
-     * 
+     *
+     *   $action->setProperty('ABC')
+     *
      * @param string $propertyName name of the property
+     * @return $this
      */
     public function __set($propertyName, $propertyValue)
     {
@@ -394,8 +402,9 @@ abstract class FBAInventoryServiceMWS_Model
 
     /**
      * Determines if field is complex type
-     * 
+     *
      * @param string $fieldType field type name
+     * @return int
      */
     private function _isComplexType ($fieldType) 
     {

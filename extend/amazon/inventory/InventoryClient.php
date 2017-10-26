@@ -20,13 +20,17 @@
 /**
  *  @see FBAInventoryServiceMWS_Interface
  */
-require_once (dirname(__FILE__) . '/Interface.php');
+require_once(dirname(__FILE__) . '/InventoryInterface.php');
 
 /**
  * FBAInventoryServiceMWS_Client is an implementation of FBAInventoryServiceMWS
  *
  */
-class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
+namespace amazon\inventory;
+
+use Exception;
+
+class InventoryClient implements InventoryInterface
 {
 
     const SERVICE_VERSION = '2010-10-01';
@@ -413,7 +417,7 @@ class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
     {
         try {
             if (empty($this->_config['ServiceURL'])) {
-                require_once (dirname(__FILE__) . '/Exception.php');
+                require_once(dirname(__FILE__) . '/InventoryException.php');
                 throw new FBAInventoryServiceMWS_Exception(
                     array ('ErrorCode' => 'InvalidServiceURL',
                            'Message' => "Missing serviceUrl configuration value. You may obtain a list of valid MWS URLs by consulting the MWS Developer's Guide, or reviewing the sample code published along side this library."));
@@ -436,7 +440,7 @@ class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
         } catch (FBAInventoryServiceMWS_Exception $se) {
             throw $se;
         } catch (Exception $t) {
-            require_once (dirname(__FILE__) . '/Exception.php');
+            require_once(dirname(__FILE__) . '/InventoryException.php');
             throw new FBAInventoryServiceMWS_Exception(array('Exception' => $t, 'Message' => $t->getMessage()));
         }
     }
@@ -463,7 +467,7 @@ class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
             $exProps["Message"] = "Internal Error";
         }
 
-        require_once (dirname(__FILE__) . '/Exception.php');
+        require_once(dirname(__FILE__) . '/InventoryException.php');
         return new FBAInventoryServiceMWS_Exception($exProps);
     }
 
@@ -528,7 +532,7 @@ class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
         $response = curl_exec($ch);
 
         if($response === false) {
-            require_once (dirname(__FILE__) . '/Exception.php');
+            require_once(dirname(__FILE__) . '/InventoryException.php');
             $exProps["Message"] = curl_error($ch);
             $exProps["ErrorType"] = "HTTP";
             curl_close($ch);
@@ -580,7 +584,7 @@ class FBAInventoryServiceMWS_Client implements FBAInventoryServiceMWS_Interface
         
         //If the body is null here then we were unable to parse the response and will throw an exception
         if($body == null){
-            require_once (dirname(__FILE__) . '/Exception.php');
+            require_once(dirname(__FILE__) . '/InventoryException.php');
             $exProps["Message"] = "Failed to parse valid HTTP response (" . $response . ")";
             $exProps["ErrorType"] = "HTTP";
             throw new FBAInventoryServiceMWS_Exception($exProps);

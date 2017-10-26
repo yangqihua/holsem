@@ -16,8 +16,8 @@
  * Library Version: 2014-09-30
  * Generated: Wed May 04 17:14:15 UTC 2016
  */
-
-interface  FBAInventoryServiceMWS_Interface
+namespace amazon\inventory;
+interface  InventoryInterface
 {
 
     /**

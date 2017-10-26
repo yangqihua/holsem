@@ -23,7 +23,8 @@
  * returned by FBA Inventory Service MWS service
  *
  */
-class FBAInventoryServiceMWS_Exception extends Exception
+namespace amazon\inventory;
+class InventoryException extends \Exception
 
 {
     /** @var string */
@@ -42,7 +43,7 @@ class FBAInventoryServiceMWS_Exception extends Exception
     private $_responseHeaderMetadata = null;
 
     /**
-     * Constructs FBAInventoryServiceMWS_Exception
+     * Constructs InventoryException
      * @param array $errorInfo details of exception.
      * Keys are:
      * <ul>
@@ -62,7 +63,7 @@ class FBAInventoryServiceMWS_Exception extends Exception
         parent::__construct($this->_message);
         if (array_key_exists("Exception", $errorInfo)) {
             $exception = $errorInfo["Exception"];
-            if ($exception instanceof FBAInventoryServiceMWS_Exception) {
+            if ($exception instanceof InventoryException) {
                 $this->_statusCode = $exception->getStatusCode();
                 $this->_errorCode = $exception->getErrorCode();
                 $this->_errorType = $exception->getErrorType();
