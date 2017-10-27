@@ -42,7 +42,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
             // 指定图表的配置项和数据
             var option = {
                 "title": {
-                    text: '订单详情',
+                    text: '销量详情',
                     textStyle: {
                         color: '#27C24C',
                         fontSize: '16'
@@ -50,12 +50,6 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                 },
                 "tooltip": {
                     "trigger": "axis",
-                    // "axisPointer": {
-                    //     "type": "shadow",
-                    //     textStyle: {
-                    //         color: "#fff"
-                    //     }
-                    // },
                 },
                 toolbox: {
                     right: 16,
@@ -64,30 +58,15 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                     }
                 },
                 "grid": {
-                    // "borderWidth": 0,
-                    // "top": 110,
                     "bottom": 100,
-                    // textStyle: {
-                    //     color: "#fff"
-                    // }
                 },
                 "legend": {
-                    // x: '4%',
-                    // top: '11%',
-                    // textStyle: {
-                    //     color: '#90979c',
-                    // },
                     "data": xData.keys,
                 },
 
                 // "calculable": true,
                 "xAxis": [{
                     "type": "category",
-                    // "axisLine": {
-                    //     lineStyle: {
-                    //         color: '#90979c'
-                    //     }
-                    // },
                     "splitLine": {
                         "show": false
                     },
@@ -97,9 +76,6 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                     "splitArea": {
                         "show": false
                     },
-                    // "axisLabel": {
-                    //     "interval": 0,
-                    // },
                     "data": xData.date,
                 }],
                 "yAxis": [{
@@ -107,11 +83,6 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                     "splitLine": {
                         "show": false
                     },
-                    // "axisLine": {
-                    //     lineStyle: {
-                    //         color: '#90979c'
-                    //     }
-                    // },
                     "axisTick": {
                         "show": false
                     },
@@ -126,8 +97,6 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                 }],
                 "dataZoom": [
                     {
-                        // "show": true,
-                        // "height": 30,
                         "xAxisIndex": [
                             0
                         ],
@@ -138,14 +107,11 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                         handleSize: '110%',
                         handleStyle: {
                             color: "#aaa",
-
                         },
                         textStyle: {
                             color: "#27C24C"
                         },
                         borderColor: "#aaa"
-
-
                     },
                     {
                         "type": "inside",
@@ -155,86 +121,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                         "end": 100
                     }
                 ],
-                "series": xData.series,
-                //     [
-                //     {
-                //         "name": "OA",
-                //         "type": "bar",
-                //         "stack": "总量",
-                //         "barMaxWidth": 40,
-                //         "data": [
-                //             709,
-                //             1917,
-                //             2455,
-                //             2610,
-                //             1719,
-                //             1433,
-                //             1544,
-                //             3285,
-                //             5208,
-                //             3372,
-                //             2484,
-                //             4078
-                //         ],
-                //     },
-                //
-                //     {
-                //         "name": "手工录入",
-                //         "type": "bar",
-                //         "stack": "总量",
-                //         "data": [
-                //             327,
-                //             1776,
-                //             507,
-                //             1200,
-                //             800,
-                //             482,
-                //             204,
-                //             1390,
-                //             1001,
-                //             951,
-                //             381,
-                //             220
-                //         ]
-                //     },
-                //
-                //     {
-                //         "name": "企业号",
-                //         "type": "bar",
-                //         "stack": "总量",
-                //         "data": [
-                //             327,
-                //             1776,
-                //             507,
-                //             1200,
-                //             800,
-                //             482,
-                //             204,
-                //             1390,
-                //             1001,
-                //             951,
-                //             381,
-                //             220
-                //         ]
-                //     }, {
-                //         "name": "总数",
-                //         "type": "line",
-                //         "data": [
-                //             1363,
-                //             3693,
-                //             2962,
-                //             3810,
-                //             2519,
-                //             1915,
-                //             1748,
-                //             4675,
-                //             6209,
-                //             4323,
-                //             2865,
-                //             4298
-                //         ]
-                //     },
-                // ]
+                "series": xData.series
             };
 
             myChart.setOption(option);
