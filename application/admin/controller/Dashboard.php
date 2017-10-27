@@ -92,7 +92,7 @@ WHERE create_time>:firstDay group by createTime,seller_sku;';
                 continue;
             }
 
-            $inventoryData['average'] = intval(($latestValue - $latestInventory7[$key]) / 7);
+            $inventoryData['average'] = intval(($latestValue - $latestInventory7[$key]) / 7)*-1;
 
             $inventoryData['sku'] = $key;
             $inventoryData['inventory'] = $latestValue;
