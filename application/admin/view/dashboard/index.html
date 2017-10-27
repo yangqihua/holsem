@@ -1,64 +1,74 @@
 <style type="text/css">
     .sm-st {
-        background:#fff;
-        padding:20px;
-        -webkit-border-radius:3px;
-        -moz-border-radius:3px;
-        border-radius:3px;
-        margin-bottom:20px;
-        -webkit-box-shadow: 0 1px 0px rgba(0,0,0,0.05);
-        box-shadow: 0 1px 0px rgba(0,0,0,0.05);
-    }
-    .sm-st-icon {
-        width:60px;
-        height:60px;
-        display:inline-block;
-        line-height:60px;
-        text-align:center;
-        font-size:20px;
-        background:#eee;
-        -webkit-border-radius:5px;
-        -moz-border-radius:5px;
-        border-radius:5px;
-        float:left;
-        margin-right:10px;
-        color:#fff;
-    }
-    .sm-st-info {
-        font-size:12px;
-        padding-top:2px;
-    }
-    .sm-st-info span {
-        display:block;
-        font-size:24px;
-        font-weight:600;
+        background: #fff;
+        padding: 20px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        margin-bottom: 20px;
+        -webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 0px rgba(0, 0, 0, 0.05);
     }
 
+    .sm-st-icon {
+        width: 60px;
+        height: 60px;
+        display: inline-block;
+        line-height: 60px;
+        text-align: center;
+        font-size: 20px;
+        background: #eee;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        float: left;
+        margin-right: 10px;
+        color: #fff;
+    }
+
+    .sm-st-info {
+        font-size: 12px;
+        padding-top: 2px;
+    }
+
+    .sm-st-info span {
+        display: block;
+        font-size: 24px;
+        font-weight: 600;
+    }
 
     .st-red {
         background-color: #F05050;
     }
+
     .st-green {
         background-color: #27C24C;
     }
+
     .st-violet {
         background-color: #7266ba;
     }
+
     .st-blue {
         background-color: #23b7e5;
     }
+
     .st-orange {
-        background-color:#fa8564;
+        background-color: #fa8564;
     }
+
     .st-tar {
-        background-color:#45cf95;
+        background-color: #45cf95;
     }
+
     .st-pink {
-        background-color:#AC75F0;
+        background-color: #AC75F0;
     }
+
     .st-yellow-b {
         background-color: #fdd752;
     }
+
     .stat-elem {
 
         background-color: #fff;
@@ -69,12 +79,12 @@
 
     .stat-info {
         text-align: center;
-        background-color:#fff;
+        background-color: #fff;
         border-radius: 5px;
         margin-top: -5px;
         padding: 8px;
-        -webkit-box-shadow: 0 1px 0px rgba(0,0,0,0.05);
-        box-shadow: 0 1px 0px rgba(0,0,0,0.05);
+        -webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 0px rgba(0, 0, 0, 0.05);
         font-style: italic;
     }
 
@@ -90,7 +100,7 @@
         text-align: center;
         vertical-align: middle;
         width: 50px;
-        float:left;
+        float: left;
     }
 
     .stat {
@@ -98,26 +108,42 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: inline-block;
-        margin-right: 10px; }
+        margin-right: 10px;
+    }
+
     .stat .value {
         font-size: 20px;
         line-height: 24px;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-weight: 500; }
+        font-weight: 500;
+    }
+
     .stat .name {
         overflow: hidden;
-        text-overflow: ellipsis; }
+        text-overflow: ellipsis;
+    }
+
     .stat.lg .value {
         font-size: 26px;
-        line-height: 28px; }
+        line-height: 28px;
+    }
+
     .stat.lg .name {
-        font-size: 16px; }
-    .stat-col .progress {height:2px;}
-    .stat-col .progress-bar {line-height:2px;height:2px;}
+        font-size: 16px;
+    }
+
+    .stat-col .progress {
+        height: 2px;
+    }
+
+    .stat-col .progress-bar {
+        line-height: 2px;
+        height: 2px;
+    }
 
     .item {
-        padding:30px 0;
+        padding: 30px 0;
     }
 </style>
 <div class="panel panel-default panel-intro">
@@ -129,47 +155,54 @@
     <div class="panel-body">
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade active in" id="one">
-                <!--<div class="row">-->
-                    <!--{volist name="totalOrderItem" id="item"}-->
-                        <!--<div class="col-sm-3 col-xs-6">-->
-                            <!--<div class="sm-st clearfix">-->
-                                <!--<span class="sm-st-icon {$item.bgClass}">{$item.sku}</span>-->
-                                <!--<div class="sm-st-info">-->
-                                    <!--<span>{$item.num}</span>-->
-                                    <!--{$item.sku} 总数-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--{/volist}-->
-                <!--</div>-->
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="box box-info">
-                            <div class="box-header"><h3 class="box-title">当前库存量</h3><span style="float:right">最新</span></div>
+                            <div class="box-header"><h3 class="box-title">当前库存量</h3><span style="float:right">最新</span>
+                            </div>
                             <div class="box-body">
                                 <table class="table table-striped" style="text-align: center">
                                     <thead>
                                     <tr>
-                                        <th><div style="text-align: center">型号</div></th>
-                                        <th><div style="text-align: center">当前库存</div></th>
-                                        <th><div style="text-align: center">安全库存</div></th>
-                                        <th><div style="text-align: center">平均销量(7天)</div></th>
-                                        <th><div style="text-align: center">进货时长(天)</div></th>
-                                        <th><div style="text-align: center">状态</div></th>
-                                        <th><div style="text-align: center">备注</div></th>
+                                        <th>
+                                            <div style="text-align: center">型号</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">当前库存</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">安全库存</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">平均销量(7天)</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">进货时长(天)</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">状态</div>
+                                        </th>
+                                        <th>
+                                            <div style="text-align: center">备注</div>
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    {volist name="inventoryDataList" id="item"}
                                     <tr>
-                                        <td>s12</td>
-                                        <td>4167</td>
-                                        <td>300</td>
-                                        <td>400</td>
-                                        <td>4</td>
-                                        <td><span class="label label-success">危险</span></td>
-                                        <td>200=(6167-400*4)<300</td>
+                                        <td>{$item.sku}</td>
+                                        <td>{$item.inventory}</td>
+                                        <td>{$item.security_inventory}</td>
+                                        <td>{$item.average}</td>
+                                        <td>{$item.inventory_duration}</td>
+                                        <td>
+                                            <span class="label label-{$item.statusClass}">{$item.status}</span>
+                                        </td>
+                                        <td>{$item.remark}</td>
                                     </tr>
-                                    </tbody></table>
+                                    {/volist}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -177,7 +210,12 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div id="echart" style="height:480px;width:100%;"></div>
+                        <div id="inventory_echart" style="height:480px;width:100%;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="units_echart" style="height:480px;width:100%;"></div>
                     </div>
                 </div>
             </div>
@@ -186,8 +224,9 @@
 </div>
 <script>
     var orderItems = {
-            date: {:json_encode($date)},
-            keys: {:json_encode($keys)},
-            data: {:json_encode($data)},
+        date: {:json_encode($date)},
+        keys: {:json_encode($keys)},
+        data: {:json_encode($data)},
     };
+    var inventoryChartDataList = {:json_encode($inventoryChartDataList)};
 </script>
