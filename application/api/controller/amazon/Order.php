@@ -297,8 +297,4 @@ class Order extends Api
         }
     }
 
-    public function test(){
-        $response = getInventoryList();
-        return json($response);
-    }
 }

@@ -23,7 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'id',
                 columns: [
                     [
-                        {checkbox: true},
+                        // {checkbox: true},
                         // {field: 'id', title: __('Id'),operate: false},
                         {field: 'holsem-s12', title: __('Holsem-s12')},
                         {field: 'holsem-x12b', title: __('Holsem-x12b')},

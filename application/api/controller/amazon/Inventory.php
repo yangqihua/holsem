@@ -11,33 +11,47 @@ namespace app\api\controller\amazon;
 use app\common\controller\Api;
 use app\common\model\amazon\Order as OrderModel;
 use app\common\model\amazon\OrderItem as OrderItemModel;
-use app\common\model\amazon\Track as TrackmModel;
-use Sauladam\ShipmentTracker\ShipmentTracker;
-
-use SSilence\ImapClient\ImapClientException;
-use SSilence\ImapClient\ImapClient as Imap;
-
-use app\admin\model\Config;
-
-use fast\Http;
+use think\Exception;
+use app\admin\model\Inventory as InventoryModel;
 
 class Inventory extends Api
 {
     protected $orderModel = null;
     protected $orderItemModel = null;
+    private $delay = 1;
 
 //    protected $noNeedRight = ['check','emailtest'];
 
     function __construct()
     {
         parent::__construct();
-        $this->orderModel = new OrderModel();
-        $this->orderItemModel = new OrderItemModel();
     }
 
-    public function getInventoryList()
+    public function inventoryList()
     {
-        return json(['title' => '执行order测试', 'time' => date("Y-m-d H:i:s"), 'code' => 0]);
+        $result = $this->getInventoryList();
+        $inventoryList = $result['inventoryList'];
+        $dbDataList = [];
+        foreach ($inventoryList as $key => $inventory) {
+            $dbData = [substr(strtolower($inventory['seller_sku']),7) => $inventory['count']];
+            $dbDataList = array_merge($dbDataList, $dbData);
+        }
+        $inventoryModel = new InventoryModel($dbDataList);
+        // 过滤post数组中的非数据表字段数据
+        $records = $inventoryModel->allowField(true)->save();
+        return json(['time' => date("Y-m-d H:i:s"), 'title' => 'inventoryList', 'code' => 200, 'message' => '插入记录数：' . $records, 'content' => $dbDataList]);
+    }
+
+    private function getInventoryList()
+    {
+        sleep($this->delay);
+        $result = getInventoryList();
+        if ($result['code'] != 200) {
+            $this->delay = $this->delay * 2;
+            trace('获取库存列表失败，原因： ' . $result['message'] . '，' . $this->delay . '后继续获取', 'error');
+            $result = $this->getInventoryList();
+        }
+        return $result;
     }
 
 }
