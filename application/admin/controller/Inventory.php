@@ -32,6 +32,6 @@ class Inventory extends Backend
      * 因此在当前控制器中可不用编写增删改查的代码,如果需要自己控制这部分逻辑
      * 需要将application/admin/library/traits/Backend.php中对应的方法复制到当前控制器,然后进行修改
      */
-    
+
 
 }

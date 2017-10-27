@@ -9,9 +9,6 @@
 namespace app\api\controller\amazon;
 
 use app\common\controller\Api;
-use app\common\model\amazon\Order as OrderModel;
-use app\common\model\amazon\OrderItem as OrderItemModel;
-use think\Exception;
 use app\admin\model\Inventory as InventoryModel;
 
 class Inventory extends Api
@@ -20,7 +17,7 @@ class Inventory extends Api
     protected $orderItemModel = null;
     private $delay = 1;
 
-//    protected $noNeedRight = ['check','emailtest'];
+//    protected $noNeedLogin = ['inventorylist'];
 
     function __construct()
     {
