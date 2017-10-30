@@ -136,7 +136,7 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
                     trigger: 'axis'
                 },
                 legend: {
-                    data:['s12','x12','x8b','x8','x5b','x5','a1']
+                    data:['s12','x12b','x8b','x8','x5b','x5','a1']
                 },
                 grid: {
                     "bottom": 100,
