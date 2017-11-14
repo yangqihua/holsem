@@ -6,7 +6,7 @@ use app\admin\model\VipUser;
 use app\common\controller\Api;
 use app\common\library\Email;
 
-class WelcomeMail extends Api
+class Welcomemail extends Api
 {
 
     // 1. 获取订单
