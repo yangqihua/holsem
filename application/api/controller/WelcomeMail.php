@@ -50,7 +50,6 @@ class WelcomeMail extends Api
             }
         }
         $mailText .= $welcomeTextConfig['thanks'];
-//        exit();
         $sendResult = $this->sendMail($to, $subject, $mailText);
         $remark .= $sendResult['message'];
         $data['mail_msg'] = $mailText;
