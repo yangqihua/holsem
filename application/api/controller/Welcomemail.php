@@ -37,8 +37,13 @@ class Welcomemail extends Api
                 foreach ($orderItemList as $k => $orderItem) {
                     $skus[] = $orderItem['seller_sku'];
                 }
-                $links = $this->getLinkBySkus($order_id, $skus);
                 $data['skus'] = implode(",", $skus);
+                $asins = [];
+                foreach ($orderItemList as $k => $orderItem) {
+                    $asins[] = $orderItem['asin'];
+                }
+                $data['asin'] = implode(",", $asins);
+                $links = $this->getLinkBySkus($order_id, $skus);
 
                 $subject = $welcomeTextConfig['has_order']['subject'];
                 $mailText .= sprintf($welcomeTextConfig['has_order']['content'], $links);
@@ -48,8 +53,19 @@ class Welcomemail extends Api
                 $subject = $welcomeTextConfig['error_order']['subject'];
                 $mailText .= sprintf($welcomeTextConfig['error_order']['content'], $order_id);
             }
+            $orderResult = getOrder($order_id);
+            if ($orderResult['code'] == 200) {
+                $data['order_date'] = $orderResult['order']['purchase_date'];
+            }
         }
         $mailText .= $welcomeTextConfig['thanks'];
+        // 如果有炸锅，则发对应的邮件内容
+        if (array_key_exists('skus', $data) && (strpos($data['skus'], 'A1') > 0 || strpos($data['skus'], 'A2') > 0)) {
+            $aConfig = config('welcome_mail.a');
+            $subject = $aConfig['subject'];
+            $link = "\n".'https://www.amazon.com/dp/B072JJBZ37 ';
+            $mailText = sprintf($aConfig['content'],input('firstname', ''),$link);
+        }
         $sendResult = $this->sendMail($to, $subject, $mailText);
         $remark .= $sendResult['message'];
         $data['mail_msg'] = $mailText;

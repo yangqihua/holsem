@@ -25,22 +25,25 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         // {field: 'id', title: __('Id')},
-                        {field: 'order_id', title: __('Order_id')},
-                        {field: 'skus', title: '购买的sku'},
-                        {field: 'firstname', title: __('Firstname')},
-                        {field: 'lastname', title: __('Lastname')},
-                        {field: 'email', title: __('Email')},
-                        {field: 'telephone', title: __('Telephone')},
-                        {field: 'fax', title: __('Fax')},
+                        {field: 'createtime', title: 'Register date', formatter: Table.api.formatter.datetime},
+                        {field: 'firstname', title: 'Name',formatter:Controller.api.formatter.name},
+                        {field: 'email', title: 'E-mail'},
+                        {field: 'telephone', title: 'TEL'},
+                        {field: 'skus', title: 'Product'},
+                        {field: 'asin', title: 'ASIN'},
+                        {field: 'order_id', title:'Order ID'},
+                        {field: 'order_date', title:'Order Date'},
+                        {field: 'extra', title:'Extra',visible: false},
+                        {field: 'remark', title: '备注',visible: false},
+
+                        {field: 'fax', title: __('Fax'),visible: false},
                         {field: 'address_1', title: __('Address_1'),visible: false,},
                         {field: 'address_2', title: __('Address_2'),visible: false,},
-                        {field: 'city', title: __('City')},
+                        {field: 'city', title: __('City'),visible: false},
                         {field: 'postcode', title: __('Postcode'),visible: false,},
-                        {field: 'company', title: __('Company')},
+                        {field: 'company', title: __('Company'),visible: false},
                         {field: 'mail_msg', title: '邮件发送内容',visible: false},
-                        {field: 'remark', title: '备注',visible: false},
                         {field: 'updatetime', title: __('Updatetime'), formatter: Table.api.formatter.datetime,visible: false,},
-                        {field: 'createtime', title: __('Createtime'), formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
@@ -58,6 +61,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         api: {
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
+            },
+            formatter: {//渲染的方法
+                name: function (value, row, index) {
+                    return row['firstname'] + ' ' + row['lastname'];
+                },
             }
         }
     };
