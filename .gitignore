@@ -16,3 +16,4 @@ public/assets/libs/
 /application/extra/site.php
 *.DS_Store
 *.log
+application/extra
