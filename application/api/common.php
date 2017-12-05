@@ -271,7 +271,7 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
             } else if ($value == 'HOLSEM-D7') {  // 刀的求好评邮件 todo:有没有既有刀又有其他商品的订单
                 $subject = config('mail_text.subject');
                 $message = sprintf(config('mail_text.knife_content'), $name);
-                $email = new Email;
+                $email = new Email(['mail_smtp_port' => '587', 'mail_verify_type' => '1']);
                 $result = $email
                     ->to($receiver_address)
                     ->subject($subject)

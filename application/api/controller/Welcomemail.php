@@ -141,12 +141,12 @@ class Welcomemail extends Api
     public function test(){
         $mailConfig = config('welcome_mail.mail');
         $options = [
-            'mail_smtp_host' => $mailConfig['host'],
-            'mail_smtp_user' => $mailConfig['username'],
-            'mail_smtp_pass' => $mailConfig['password'],
-            'mail_from' => $mailConfig['username'],
-            'mail_smtp_port' => '465',
-            'mail_verify_type' => '2'
+//            'mail_smtp_host' => $mailConfig['host'],
+//            'mail_smtp_user' => $mailConfig['username'],
+//            'mail_smtp_pass' => $mailConfig['password'],
+//            'mail_from' => $mailConfig['username'],
+            'mail_smtp_port' => '587',
+            'mail_verify_type' => '1'
         ];
         $email = new Email($options);
         $result = $email
