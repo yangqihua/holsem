@@ -27,7 +27,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        // {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id')},
                         {field: 'amazon_order_id', title: __('Amazon_order_id'), style: 'width:228px'},
                         {field: 'package_number', title: __('Package_number')},
                         {field: 'skus', title: __('Skus'),formatter: Controller.api.formatter.skus, operate: false},
