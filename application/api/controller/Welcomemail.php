@@ -136,4 +136,25 @@ class Welcomemail extends Api
         }
     }
 
+    public function test(){
+        $mailConfig = config('welcome_mail.mail');
+        $options = [
+            'mail_smtp_host' => $mailConfig['host'],
+            'mail_smtp_user' => $mailConfig['username'],
+            'mail_smtp_pass' => $mailConfig['password'],
+            'mail_from' => $mailConfig['username']
+        ];
+        $email = new Email($options);
+        $result = $email
+            ->to("904693433@qq.com")
+            ->subject("主题")
+            ->message("this is test", false)
+            ->send();
+        if ($result) {
+            return ['code' => 200, 'message' => '欢迎邮件发送成功。'];
+        } else {
+            return ['code' => 500, 'message' => '欢迎邮件发送失败，原因：' . $email->getError() . '。'];
+        }
+    }
+
 }
