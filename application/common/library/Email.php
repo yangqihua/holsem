@@ -168,6 +168,7 @@ class Email
                 }
                 catch (\phpmailerException $e)
                 {
+                    trace('邮件参数为: '.json($this->options),'error');
                     $this->setError($e->getMessage());
                 }
 

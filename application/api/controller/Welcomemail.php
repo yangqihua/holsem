@@ -123,7 +123,7 @@ class Welcomemail extends Api
             'mail_smtp_pass' => $mailConfig['password'],
             'mail_from' => $mailConfig['username'],
             'mail_smtp_port' => '465',
-            'mail_verify_type' => '2'
+            'mail_verify_type' => 2
         ];
         $email = new Email($options);
         $result = $email
