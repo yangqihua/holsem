@@ -151,9 +151,9 @@ class Welcomemail extends Api
             ->message("this is test", false)
             ->send();
         if ($result) {
-            return ['code' => 200, 'message' => '欢迎邮件发送成功。'];
+            return json(['code' => 200, 'message' => '欢迎邮件发送成功。']);
         } else {
-            return ['code' => 500, 'message' => '欢迎邮件发送失败，原因：' . $email->getError() . '。'];
+            return json(['code' => 500, 'message' => '欢迎邮件发送失败，原因：' . $email->getError() . '。','options'=>$options]);
         }
     }
 
