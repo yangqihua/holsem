@@ -292,7 +292,7 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 }
                 $subject = config('mail_text.subject');
                 $message = sprintf(config('mail_text.zg_content'), $name, $a_link);
-                $email = new Email;
+                $email = new Email(['mail_smtp_port' => '587', 'mail_verify_type' => 1]);
                 $result = $email
                     ->to($receiver_address)
                     ->subject($subject)
@@ -321,7 +321,7 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
 
         $subject = config('mail_text.subject');
         $message = sprintf(config('mail_text.content'), $name, $unU3, $holsemString);
-        $email = new Email;
+        $email = new Email(['mail_smtp_port' => '587', 'mail_verify_type' => 1]);
         $result = $email
             ->to($receiver_address)
             ->subject($subject)
