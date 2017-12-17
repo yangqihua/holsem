@@ -60,11 +60,17 @@ class Welcomemail extends Api
         }
         $mailText .= $welcomeTextConfig['thanks'];
         // 如果有炸锅，则发对应的邮件内容
-        if (array_key_exists('skus', $data) && (strpos($data['skus'], 'A1') > 0 || strpos($data['skus'], 'A2') > 0)) {
+        if (array_key_exists('skus', $data) && (strpos($data['skus'], 'A1') > 0 || strpos($data['skus'], 'A2') > 0 || strpos($data['skus'], 'A3') > 0)) {
             $aConfig = config('welcome_mail.a');
             $subject = $aConfig['subject'];
-            $link = "\n".'https://www.amazon.com/dp/B072JJBZ37 ';
-            $mailText = sprintf($aConfig['content'],input('firstname', ''),$link);
+            if (strpos($data['skus'], 'A1') > 0) {
+                $link = "\n" . 'https://www.amazon.com/dp/B072JJBZ37 ';
+            } else if (strpos($data['skus'], 'A2') > 0) {
+                $link = "\n" . 'https://www.amazon.com/dp/B071W83YND ';
+            }else{  // A3
+                $link = "\n" . 'https://www.amazon.com/dp/B076HHRFFB ';
+            }
+            $mailText = sprintf($aConfig['content'], input('firstname', ''), $link);
         }
         $sendResult = $this->sendMail($to, $subject, $mailText);
         $remark .= $sendResult['message'];
@@ -138,7 +144,8 @@ class Welcomemail extends Api
         }
     }
 
-    public function test(){
+    public function test()
+    {
         $mailConfig = config('welcome_mail.mail');
         $options = [
 //            'mail_smtp_host' => $mailConfig['host'],
@@ -157,7 +164,7 @@ class Welcomemail extends Api
         if ($result) {
             return json(['code' => 200, 'message' => '欢迎邮件发送成功。']);
         } else {
-            return json(['code' => 500, 'message' => '欢迎邮件发送失败，原因：' . $email->getError() . '。','options'=>$options]);
+            return json(['code' => 500, 'message' => '欢迎邮件发送失败，原因：' . $email->getError() . '。', 'options' => $options]);
         }
     }
 
