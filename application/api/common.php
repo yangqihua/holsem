@@ -282,13 +282,15 @@ if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategory
                 } else {
                     return ['code' => 500, 'message' => $email->getError()];
                 }
-            } else if ($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2') {
+            } else if ($value == 'HOLSEM-A1' || $value == 'HOLSEM-A2'  || $value == 'HOLSEM-A3') {
                 // todo: 发送炸锅的邮件
                 $a_link = '';
                 if ($value == 'HOLSEM-A1') {
                     $a_link = "\n    https://www.amazon.com/dp/B072JJBZ37";
-                } else {
+                } else if($value == 'HOLSEM-A2') {
                     $a_link = "\n    https://www.amazon.com/dp/B071W83YND";
+                } else{  // A3
+                    $a_link = "\n    https://www.amazon.com/dp/B076HHRFFB";
                 }
                 $subject = config('mail_text.subject');
                 $message = sprintf(config('mail_text.zg_content'), $name, $a_link);
