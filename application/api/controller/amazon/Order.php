@@ -269,6 +269,10 @@ class Order extends Api
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
 //            $receiver_address = '904693433@qq.com';
+            if(in_array($order['amazon_order_id'],['112-2124443-2541826','112-4845189-1312213'])){
+                trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： 指定订单号不用发送邮件', 'error');
+                return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => '不用发送好评邮件']);
+            }
             $receiver_address = $order['buyer_email'];
             $name = $order['buyer_name'];
             if ($name) {
