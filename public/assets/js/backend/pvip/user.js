@@ -23,19 +23,24 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'order_id',
                 columns: [
                     [
-                                                {field: 'register_date', title: __('Register_date')},
+                        {checkbox: true},
+                        {field: 'register_date', title: __('Register_date')},
                         {field: 'name', title: __('Name')},
                         {field: 'email', title: __('Email')},
                         {field: 'tel', title: __('Tel')},
                         {field: 'product', title: __('Product')},
                         {field: 'asin', title: __('Asin')},
-{checkbox: true},
                         {field: 'order_id', title: __('Order_id')},
                         {field: 'order_date', title: __('Order_date')},
                         {field: 'Warranty', title: __('Warranty')},
                         {field: 'remark1', title: __('Remark1')},
                         {field: 'remark2', title: __('Remark2')},
-                        {field: 'operate', title: __('Operate'), events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {
+                            field: 'operate',
+                            title: __('Operate'),
+                            events: Table.api.events.operate,
+                            formatter: Table.api.formatter.operate
+                        }
                     ]
                 ]
             });
