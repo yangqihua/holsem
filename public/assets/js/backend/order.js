@@ -61,6 +61,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             field: 'buyer_email',
                             title: __('Buyer_email'),
                             formatter: Controller.api.formatter.email,
+                            visible: false,
                             operate: false
                         },
                         {
@@ -73,7 +74,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'sales_channel', title: __('Sales_channel'), visible: false, operate: false},
                         {field: 'last_update_date', title: __('Last_update_date'), visible: false, operate: false},
                         {field: 'order_type', title: __('Order_type'), visible: false, operate: false},
-                        {field: 'purchase_date', title: __('Purchase_date'), visible: false, operate: false},
+                        {field: 'purchase_date', title: __('Purchase_date'), operate: false},
                         {field: 'is_business_order', title: __('Is_business_order'), visible: false, operate: false},
                         {field: 'ship_service_level', title: __('Ship_service_level'), visible: false, operate: false},
                         {
