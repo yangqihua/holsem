@@ -21,16 +21,31 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'id',
+                searchFormVisible: true,
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id'), visible: false, operate: false},
                         {field: 'amazon_order_id', title: __('Amazon_order_id')},
                         {field: 'sku', title: __('Sku')},
                         {field: 'item_price', title: __('Item_price')},
                         {field: 'item_promotion', title: __('Item_promotion')},
-                        {field: 'purchase_date', title: __('Purchase_date')},
-                        {field: 'operate', title: __('Operate'), events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {
+                            field: 'purchase_date',
+                            title: __('Purchase_date'),
+                            formatter: Table.api.formatter.datetime,
+                            sortable: true,
+                            operate: 'BETWEEN',
+                            type: 'datetime',
+                            addclass: 'datetimepicker',
+                            data: 'data-date-format="YYYY-MM-DD HH:mm:ss"'
+                        },
+                        // {
+                        //     field: 'operate',
+                        //     title: __('Operate'),
+                        //     events: Table.api.events.operate,
+                        //     formatter: Table.api.formatter.operate
+                        // }
                     ]
                 ]
             });
