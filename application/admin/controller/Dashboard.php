@@ -22,8 +22,8 @@ class Dashboard extends Backend
      */
     public function index()
     {
-        $firstDay = strtotime(date('Y-m-d', strtotime("-2 month")));
-        $sql = 'SELECT from_unixtime(create_time,\'%m月%d日\') createTime,seller_sku,count(*) num from fastadmin.order_item 
+        $firstDay = strtotime(date('Y-m-d', strtotime("-3 month")));
+        $sql = 'SELECT from_unixtime(create_time,\'%Y年%m月%d日\') createTime,seller_sku,count(*) num from order_item 
 WHERE create_time>:firstDay group by createTime,seller_sku;';
         $orderItems = Db::query($sql, ['firstDay' => $firstDay]);
         $ctTimeItems = [];
