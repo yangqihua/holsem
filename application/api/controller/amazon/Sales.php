@@ -48,9 +48,7 @@ o.purchase_date as purchase_date
 
         $finalResults = [];
         foreach ($orderItems as $item){
-            $p_time = strtotime($item['purchase_date'])-16*60*60;
-            $item['purchase_date'] = datetime($p_time);
-
+            $item['purchase_date'] = strtotime($item['purchase_date'])-16*60*60;
             $item_price_result = json_decode($item['item_price'],true);
             $item_price = '无';
             if($item_price_result){
