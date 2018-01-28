@@ -41,13 +41,16 @@ class Sales extends Api
         $maxOrderItemId = $maxOrderItemIds[0]['result'] ? $maxOrderItemIds[0]['result'] : 0;
 
         $sql = 'SELECT oi.id as order_item_id ,seller_sku as sku,item_price,promotion_discount as item_promotion,amazon_order_id,
-oi.create_time as purchase_date
+o.purchase_date as purchase_date
  FROM `order_item` as oi left join `order` as o on oi.order_id=o.id 
  where oi.id>:maxOrderItemId and oi.create_time>1514736000 and purchase_date is not null  order by oi.id asc limit 100;';
         $orderItems = Db::query($sql, ['maxOrderItemId' => $maxOrderItemId]);
 
         $finalResults = [];
         foreach ($orderItems as $item){
+            $p_time = strtotime($item['purchase_date'])-16*60*60;
+            $item['purchase_date'] = datetime($p_time);
+
             $item_price_result = json_decode($item['item_price'],true);
             $item_price = '无';
             if($item_price_result){
