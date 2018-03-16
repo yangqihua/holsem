@@ -203,6 +203,7 @@ class Order extends Api
         $order_usps_index = $config->where("name", "order_usps_index")->find();
         $order_packages = "USPS,UPS";
         $order_usps_count = $this->orderModel
+            ->where("has_send_mail", "<>", "1")
             ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
             ->where("package_number", "<>", "null")
             ->where(["ship_by" => ["in", $order_packages]])
@@ -214,6 +215,7 @@ class Order extends Api
             $usps_index = 0;
         }
         $orders = $this->orderModel
+            ->where("has_send_mail", "<>", "1")
             ->where(" deliver_status not like 'delivered%' or deliver_status is null ")
             ->where("package_number", "<>", "null")
             ->where(["ship_by" => ["in", $order_packages]])
@@ -298,6 +300,66 @@ class Order extends Api
         } else { // 只有在非 delivered的情况下才往后移动
             $config->update(['id' => $order_usps_index['id'], 'value' => ($usps_index + 1)]);
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+        }
+    }
+
+    public function sendOtherMail(){
+        $config = new Config();
+        $twoWeeksAgo = date('Y-m-d H:i:s', strtotime("-2 week"));
+        $other_express_index = $config->where("name", "other_express_index")->find();
+        $order_packages = "USPS,UPS";
+        $order_other_count = $this->orderModel
+            ->where("has_send_mail", "<>", "1")
+            ->where("purchase_date", "<", $twoWeeksAgo)
+            ->where(["ship_by" => ["not in", $order_packages]])
+            ->count();
+
+        return json(['count'=>$order_other_count]);
+        $config->save(['value' => $order_other_count], ['name' => 'other_express_total']);
+        $other_index = intval($other_express_index['value']);
+        // 重新轮询
+        if ($other_index >= $order_other_count) {
+            $other_index = 0;
+        }
+
+        $orders = $this->orderModel
+            ->where("purchase_date", "<", $twoWeeksAgo)
+            ->where(["ship_by" => ["not in", $order_packages]])
+            ->limit($other_index, 1)
+            ->select();
+
+        $order = false;
+        if ($orders && count($orders) == 1) {
+            $order = $orders[0];
+        }
+        if (!$order) {
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'sendOtherMail', 'code' => 500, 'message' => 'error', 'content' => '暂无需要查询的订单']);
+        }
+
+        $receiver_address = $order['buyer_email'];
+        $receiver_address = '904693433@qq.com';
+        $name = $order['buyer_name'];
+        if ($name) {
+            $n = explode(' ', $name);
+            if (count($n) > 1) {
+                $name = $n[0];
+            }
+        }
+
+        if (!$this->orderItemModel->where('order_id', $order['id'])->find()) {
+            $this->listOrderItems($order['amazon_order_id']);
+        }
+        $orderCategoryList = $this->orderItemModel->where('order_id', $order['id'])->column('seller_sku');
+        $result = sendCustomersMail($receiver_address, $name, $orderCategoryList);
+        if ($result && $result['code'] == 200) {
+            // 2.更新order的has_send_mail 字段
+            $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
+            $config->update(['id' => $other_express_index['id'], 'value' => ($other_index + 1)]);
+//            return json(['time' => date("Y-m-d H:i:s"), 'count' =>$order_other_count , 'twoWeeksAgo' => $twoWeeksAgo]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+        } else {
+            trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： ' . $result['message'], 'error');
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
         }
     }
 
