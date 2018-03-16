@@ -46,6 +46,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             formatter: Controller.api.formatter.packageStatus,
                             operate: 'LIKE %...%',
                             placeholder: '模糊搜索，*表示任意字符',
+                            visible: false
                         },
                         {
                             field: 'has_send_mail',

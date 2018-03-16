@@ -267,6 +267,7 @@ class Order extends Api
             $deliver_status = $deliver_status . "_1";
         }
         $this->orderModel->save(['deliver_status' => $deliver_status], ['id' => $order['id']]);
+        return json(['code'=>200,'message'=>'这里不发送邮件了']);
         // TODO：在这里执行发送邮件的操作
         if ($order['deliver_status'] == 'delivered' && $order['buyer_email']) {
             // 1.发送邮件
@@ -314,7 +315,7 @@ class Order extends Api
             ->where("has_send_mail", "<>", "1")
             ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
-            ->where(["ship_by" => ["not in", $order_packages]])
+//            ->where(["ship_by" => ["not in", $order_packages]])
             ->count();
 
 //        return json(['count'=>$order_other_count]);
@@ -329,7 +330,7 @@ class Order extends Api
             ->where("has_send_mail", "<>", "1")
             ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
-            ->where(["ship_by" => ["not in", $order_packages]])
+//            ->where(["ship_by" => ["not in", $order_packages]])
             ->limit($other_index, 1)
             ->select();
 
