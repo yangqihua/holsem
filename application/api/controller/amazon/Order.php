@@ -304,6 +304,7 @@ class Order extends Api
     }
 
     public function sendOtherMail(){
+        sleep(15);
         $config = new Config();
         $twoWeeksAgo = date('Y-m-d H:i:s', strtotime("-2 week"));
         $other_express_index = $config->where("name", "other_express_index")->find();
