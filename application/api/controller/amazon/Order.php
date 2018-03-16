@@ -308,8 +308,10 @@ class Order extends Api
         $twoWeeksAgo = date('Y-m-d H:i:s', strtotime("-2 week"));
         $other_express_index = $config->where("name", "other_express_index")->find();
         $order_packages = "USPS,UPS";
+        $beginDate = '2018-03-01 00:00:00';
         $order_other_count = $this->orderModel
             ->where("has_send_mail", "<>", "1")
+            ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
             ->where(["ship_by" => ["not in", $order_packages]])
             ->count();
@@ -323,6 +325,8 @@ class Order extends Api
         }
 
         $orders = $this->orderModel
+            ->where("has_send_mail", "<>", "1")
+            ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
             ->where(["ship_by" => ["not in", $order_packages]])
             ->limit($other_index, 1)
@@ -337,7 +341,7 @@ class Order extends Api
         }
 
         $receiver_address = $order['buyer_email'];
-        $receiver_address = '904693433@qq.com';
+//        $receiver_address = '904693433@qq.com';
         $name = $order['buyer_name'];
         if ($name) {
             $n = explode(' ', $name);
@@ -345,6 +349,8 @@ class Order extends Api
                 $name = $n[0];
             }
         }
+
+//        return json(['code'=>200]);
 
         if (!$this->orderItemModel->where('order_id', $order['id'])->find()) {
             $this->listOrderItems($order['amazon_order_id']);
@@ -355,10 +361,10 @@ class Order extends Api
             // 2.更新order的has_send_mail 字段
             $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
             $config->update(['id' => $other_express_index['id'], 'value' => ($other_index + 1)]);
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success']);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'sendOtherMail', 'code' => 200, 'message' => 'success']);
         } else {
             trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： ' . $result['message'], 'error');
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'sendOtherMail', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
         }
     }
 

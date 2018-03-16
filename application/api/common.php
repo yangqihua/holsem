@@ -250,6 +250,9 @@ if (!function_exists('getInventoryList()')) {
 if (!function_exists('sendCustomersMail($receiver_address, $name, $orderCategoryList)')) {
     function sendCustomersMail($receiver_address, $name, $orderCategoryList)
     {
+        if(!$receiver_address){
+            return ['code' => 500, 'message' => 'receiver_address 不能为空: ' . $receiver_address];
+        }
         $name = $name ? $name : 'customer';
         $holsems = [];
         foreach ($orderCategoryList as $key => $value) {
