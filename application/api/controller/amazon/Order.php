@@ -314,7 +314,7 @@ class Order extends Api
             ->where(["ship_by" => ["not in", $order_packages]])
             ->count();
 
-        return json(['count'=>$order_other_count]);
+//        return json(['count'=>$order_other_count]);
         $config->save(['value' => $order_other_count], ['name' => 'other_express_total']);
         $other_index = intval($other_express_index['value']);
         // 重新轮询
@@ -355,8 +355,7 @@ class Order extends Api
             // 2.更新order的has_send_mail 字段
             $this->orderModel->save(['has_send_mail' => 1], ['id' => $order['id']]);
             $config->update(['id' => $other_express_index['id'], 'value' => ($other_index + 1)]);
-//            return json(['time' => date("Y-m-d H:i:s"), 'count' =>$order_other_count , 'twoWeeksAgo' => $twoWeeksAgo]);
-            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success', 'content' => $trackData]);
+            return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 200, 'message' => 'success']);
         } else {
             trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： ' . $result['message'], 'error');
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'getPackageStatus', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
