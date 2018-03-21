@@ -312,7 +312,7 @@ class Order extends Api
         $order_packages = "USPS,UPS";
         $beginDate = '2018-03-01 00:00:00';
         $order_other_count = $this->orderModel
-            ->where("buyer_email", "<>", null)
+            ->where("buyer_email", "is not null", null)
             ->where("has_send_mail", "<>", "1")
             ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
@@ -328,7 +328,7 @@ class Order extends Api
         }
 
         $orders = $this->orderModel
-            ->where("buyer_email", "<>", null)
+            ->where("buyer_email", "is not null",null)
             ->where("has_send_mail", "<>", "1")
             ->where("purchase_date", ">", $beginDate)
             ->where("purchase_date", "<", $twoWeeksAgo)
