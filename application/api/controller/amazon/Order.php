@@ -367,6 +367,7 @@ class Order extends Api
             $config->update(['id' => $other_express_index['id'], 'value' => ($other_index + 1)]);
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'sendOtherMail', 'code' => 200, 'message' => 'success']);
         } else {
+            $config->update(['id' => $other_express_index['id'], 'value' => ($other_index + 1)]);
             trace('[' . date("Y-m-d H:i:s") . '] 发送邮件给 ' . $order['buyer_email'] . ' 失败，订单号为：' . $order['amazon_order_id'] . '，原因： ' . $result['message'], 'error');
             return json(['time' => date("Y-m-d H:i:s"), 'title' => 'sendOtherMail', 'code' => 500, 'message' => 'error', 'content' => $result['message']]);
         }
