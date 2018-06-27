@@ -29,7 +29,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'amazon_order_id', title: __('Amazon_order_id')},
                         {field: 'sku', title: __('Sku')},
                         {field: 'item_price', title: __('Item_price')},
-                        {field: 'item_promotion', title: __('Item_promotion')},
+                        {field: 'item_promotion', title: __('Item_promotion'),sortable: true},
                         {
                             field: 'purchase_date',
                             title: __('Purchase_date'),
