@@ -26,9 +26,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id'), visible: false, operate: false},
-                        {field: 'amazon_order_id', title: __('Amazon_order_id')},
-                        {field: 'sku', title: __('Sku')},
-                        {field: 'item_price', title: __('Item_price')},
+                        {field: 'amazon_order_id', title: __('Amazon_order_id'),sortable: true},
+                        {field: 'sku', title: __('Sku'),sortable: true},
+                        {field: 'item_price', title: __('Item_price'),sortable: true},
                         {field: 'item_promotion', title: __('Item_promotion'),sortable: true},
                         {
                             field: 'purchase_date',
