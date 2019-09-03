@@ -61,9 +61,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {
                             field: 'buyer_email',
                             title: __('Buyer_email'),
-                            formatter: Controller.api.formatter.email,
-                            visible: false,
-                            operate: false
+                            formatter: Controller.api.formatter.email
+                            // visible: false,
+                            // operate: false
                         },
                         {
                             field: 'update_time',
