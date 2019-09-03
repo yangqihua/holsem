@@ -57,7 +57,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             style:'width:159px'
                         },
 
-                        {field: 'buyer_name', title: __('Buyer_name'), operate: false},
+                        {field: 'buyer_name', title: __('Buyer_name'), operate:true},
                         {
                             field: 'buyer_email',
                             title: __('Buyer_email'),
